@@ -51,6 +51,7 @@ ts_xy_server <- function(id, x, y, main_title, x_label = NULL,
                          y_breaks = 1,
                          cell_stroke = 0.5, cell_size = 2, cell_alpha = 0.6,
                          trend_alpha = 0.8) {
+  dicrete_cell_color <<- c("HSC" = "#56B4E9", "EMP" = "#F0E442", "Early Eryth" = "#009E73")
   moduleServer(
     id = id,
     module = function(input, output, session) {
@@ -102,7 +103,7 @@ ts_xy_server <- function(id, x, y, main_title, x_label = NULL,
             axis.title = element_text(color = "white", size = rel(1.25)),
             legend.position = "none"
           ) +
-          scale_color_manual(values = c("HSC" = "#56B4E9", "EMP" = "#F0E442", "Early Eryth" = "#009E73")) +
+          scale_color_manual(values = dicrete_cell_color) +
           scale_x_continuous(
             limits = c(0, max(df()[["x"]])) + 1.5,
             breaks = round(seq(0, max(df()[["x"]]) + x_breaks, by = x_breaks))

@@ -7,8 +7,6 @@
 #' @param id A unique identifier for the module, used to distinguish this module's
 #' UI and server components from others within a Shiny application.
 #'
-#' @import ggplot2
-#' @import shiny
 #'
 #' @export
 var_bar_ui <- function(id) {
