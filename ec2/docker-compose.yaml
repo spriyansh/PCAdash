@@ -1,0 +1,25 @@
+services:
+  shiny:
+    build: ./shiny
+    volumes:
+      - ../shinyApps:/srv/shiny-server/
+    ports:
+      - 8000:8000
+    image: rocker-shiny-amd64:scmp
+    container_name: scmp_shiny_app
+    restart: always
+    command: "Rscript /srv/shiny-server/app/app.R"
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    image: rocker-nginx-amd64:scmp
+    container_name: scmp_nginx_container
+    depends_on:
+      - shiny
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    links:
+      - shiny
+    restart: always
