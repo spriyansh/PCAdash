@@ -13,7 +13,8 @@ var_bar_server(
   y_label = NULL,
   sub_title = NULL,
   bin_width = 0.5,
-  bar_alpha = 0.7
+  bar_alpha = 0.7,
+  polar_cord = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ each principal component's variance.}
 \item{bin_width}{The width of the bars in the plot. Defaults to 0.5.}
 
 \item{bar_alpha}{The transparency level of the bars. Defaults to 0.7.}
+
+\item{polar_cord}{A logical value indicating whether to use polar coordinates for the plot. Defaults to FALSE.}
 }
 \description{
 A Shiny server module that renders a ggplot2-based bar plot representing the variance
@@ -49,3 +52,4 @@ and generates a bar plot with error bars to indicate standard deviations. The pl
 rendered using ggplot2 with a minimalist theme and can be customized through various
 parameters. It also includes options to display the percentage of variance on top of each bar.
 }
+\keyword{internal}

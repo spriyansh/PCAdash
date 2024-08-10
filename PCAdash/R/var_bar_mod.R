@@ -8,7 +8,7 @@
 #' UI and server components from others within a Shiny application.
 #'
 #'
-#' @export
+#' @keywords internal
 var_bar_ui <- function(id) {
   ns <- NS(id)
   plotOutput(outputId = ns("var_bar"))
@@ -33,6 +33,7 @@ var_bar_ui <- function(id) {
 #' @param sub_title An optional subtitle for the plot. Defaults to NULL.
 #' @param bin_width The width of the bars in the plot. Defaults to 0.5.
 #' @param bar_alpha The transparency level of the bars. Defaults to 0.7.
+#' @param polar_cord A logical value indicating whether to use polar coordinates for the plot. Defaults to FALSE.
 #'
 #' @details
 #' This module calculates the percentage of variance explained by each principal component
@@ -40,7 +41,7 @@ var_bar_ui <- function(id) {
 #' rendered using ggplot2 with a minimalist theme and can be customized through various
 #' parameters. It also includes options to display the percentage of variance on top of each bar.
 #'
-#' @export
+#' @keywords internal
 var_bar_server <- function(id,
                            var_per_pc,
                            sd,
@@ -49,48 +50,32 @@ var_bar_server <- function(id,
                            y_label = NULL,
                            sub_title = NULL,
                            bin_width = 0.5,
-                           bar_alpha = 0.7) {
+                           bar_alpha = 0.7,
+                           polar_cord = FALSE) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
       df <- reactive({
-        # Calc x and y
-        x <- paste0("PC", 1:length(var_per_pc))
+        if (polar_cord) {
+          x <- names(var_per_pc)
+        } else {
+          x <- paste0("PC", 1:length(var_per_pc))
+        }
         percent_var <- (var_per_pc / sum(var_per_pc)) * 100
 
-        data.frame(
+        df <- data.frame(
           percent_var = percent_var,
           x = x,
           sd = sd,
           var_per_pc = var_per_pc
         )
+        return(df)
       })
 
       # Render a plot
       output$var_bar <- renderPlot({
         # Bar plot for Variance
-        ggplot() +
-          geom_bar(
-            data = df(), aes(x = x, y = var_per_pc),
-            stat = "identity", fill = "#21918c", color = "#f98e09",
-            width = bin_width, alpha = bar_alpha
-          ) +
-          geom_errorbar(
-            data = df(),
-            aes(
-              x = x, y = var_per_pc,
-              ymin = var_per_pc - sd, ymax = var_per_pc + sd
-            ), width = 0.3,
-            alpha = 1, color = "#fde725", linetype = "dotted"
-          ) +
-          geom_text(
-            data = df(),
-            aes(
-              x = x, y = var_per_pc,
-              label = paste0(round(percent_var, 2), "%")
-            ), vjust = -5,
-            color = "#fcffa4"
-          ) +
+        p <- ggplot() +
           theme_minimal() +
           labs(
             title = main_title,
@@ -120,6 +105,59 @@ var_bar_server <- function(id,
             axis.title = element_text(color = "white", size = rel(1.25)),
             legend.position = "none"
           )
+
+
+        if (polar_cord) {
+          p <- p +
+            geom_bar(
+              data = df(),
+              aes(x = x, y = var_per_pc),
+              stat = "identity", fill = "#21918c", color = "#f98e09",
+              width = bin_width, alpha = bar_alpha
+            ) + geom_text(
+              data = df(),
+              aes(
+                x = x, y = var_per_pc,
+                label = round(var_per_pc, 1),
+              ), vjust = -1, size = 5,
+              color = "#fcffa4"
+            ) +
+            coord_polar(theta = "x", clip = "off") + theme(
+              axis.line.x = element_blank(),
+              axis.line.y = element_blank(),
+              axis.text.y = element_blank(),
+              axis.ticks = element_blank(),
+              axis.text.x = element_text(
+                colour = "white", size = rel(1)
+              ),
+            ) +
+            xlab("") + ylab("")
+          return(p)
+        } else {
+          p <- p +
+            geom_bar(
+              data = df(),
+              aes(x = factor(x, levels = paste0("PC", sort(as.numeric(gsub("PC", "", x))))), y = var_per_pc),
+              stat = "identity", fill = "#21918c", color = "#f98e09",
+              width = bin_width, alpha = bar_alpha
+            ) +
+            geom_errorbar(
+              data = df(),
+              aes(
+                x = x, y = var_per_pc,
+                ymin = var_per_pc - sd, ymax = var_per_pc + sd
+              ), width = 0.3,
+              alpha = 1, color = "#fde725", linetype = "dotted"
+            ) + geom_text(
+              data = df(),
+              aes(
+                x = x, y = var_per_pc,
+                label = paste0(round(percent_var, 2), "%")
+              ), vjust = -5,
+              color = "#fcffa4"
+            )
+          return(p)
+        }
       })
     }
   )

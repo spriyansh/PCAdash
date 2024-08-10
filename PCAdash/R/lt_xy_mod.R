@@ -7,8 +7,7 @@
 #' @param id A unique identifier for the module, used to distinguish this module's
 #' UI and server components from others within a Shiny application.
 #'
-#'
-#' @export
+#' @keywords internal
 lt_xy_ui <- function(id) {
   ns <- NS(id)
   plotOutput(outputId = ns("lt_xy"))
@@ -40,9 +39,7 @@ lt_xy_ui <- function(id) {
 #' @param color_type A string specifying the type of color mapping. Options are "continuous"
 #' (default) for mapping \code{pTime} to colors, or "discrete" for mapping \code{catgeory} to colors.
 #'
-#'
-#' @export
-
+#' @keywords internal
 lt_xy_server <- function(id, x, y,
                          pTime,
                          main_title,

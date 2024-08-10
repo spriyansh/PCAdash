@@ -7,10 +7,10 @@
 # data("metagene_results", package = "PCAdash")
 # data("cell_type", package = "PCAdash")
 # data("tsne_coords", package = "PCAdash")
+# data("counts", package = "PCAdash")
 # data("pTime", package = "PCAdash")
 # data("pTime", package = "PCAdash")
-# data("pTime", package = "PCAdash")
-# metagene_id <- "Oxidative phosphorylation"
+# metagene_id <- names(metagene_results)[8]
 # x_values <- pTime
 # y_values <- as.numeric(metagene_results[[metagene_id]]$PC)
 # main_title <- metagene_results[[metagene_id]]$term
@@ -31,17 +31,31 @@
 # tsne_coords <- tsne_coords[names(pTime), , drop = FALSE]
 # tsne_x <- tsne_coords[, 1, drop = TRUE]
 # tsne_y <- tsne_coords[, 2, drop = TRUE]
+# y_matrix <- counts[rownames(metagene_results$`Oxidative phosphorylation`$loadings), , drop = FALSE]
 #
+# loading_vector <- metagene_results[[metagene_id]]$loadings[, 1]
 #
+# source("multi_ts_xy_mod.R")
+# source("var_bar_mod.R")
+# source("ts_xy_mod.R")
+# source("lt_xy_mod.R")
 # ui <- shiny::fluidPage(
 #   shiny::fluidRow(
-#     var_bar_ui("variance_bar"),
-#     ts_xy_ui("metagene"),
-#     lt_xy_ui("latent_plot")
+#     column(4, var_bar_ui("variance_bar")),
+#     column(4, ts_xy_ui("metagene")),
+#     column(4, lt_xy_ui("latent_plot")),
+#   ),
+#   shiny::fluidRow(
+#     column(4, multi_ts_xy_ui("contri_genes")),
+#     column(4, ts_xy_ui("contri_single")),
+#     shiny::column(4, var_bar_ui("polar_bar"))
 #   )
 # )
 #
 # server <- function(input, output, session) {
+#   source("multi_ts_xy_mod.R")
+#   source("var_bar_mod.R")
+#   source("ts_xy_mod.R")
 #   source("lt_xy_mod.R")
 #   ts_xy_server(
 #     id = "metagene",
@@ -85,6 +99,52 @@
 #     cell_size = cell_size,
 #     cell_stroke = 0.2,
 #     color_type = "discrete"
+#   )
+#   multi_ts_xy_server(
+#     id = "contri_genes",
+#     x = x_values,
+#     y_matrix = t(log1p(y_matrix)),
+#     main_title = main_title,
+#     color_by = color_by,
+#     sub_title = sub_title,
+#     x_label = x_label,
+#     y_label = y_label,
+#     trend_width = trend_width,
+#     x_breaks = x_breaks,
+#     cell_alpha = cell_alpha,
+#     cell_size = cell_size,
+#     cell_stroke = cell_stroke,
+#     trend_alpha = 0.5
+#   )
+#   ts_xy_server(
+#     id = "contri_single",
+#     x = x_values,
+#     y = t(log1p(y_matrix))[, 2, drop = TRUE],
+#     main_title = main_title,
+#     color_by = color_by,
+#     sub_title = "Expression Pattern Over Pseudotime",
+#     x_label = x_label,
+#     y_label = "log1p(Expression)",
+#     trend_width = trend_width,
+#     x_breaks = x_breaks,
+#     y_breaks = y_breaks,
+#     cell_alpha = cell_alpha,
+#     cell_size = cell_size,
+#     cell_stroke = cell_stroke,
+#     trend_alpha = trend_alpha
+#   )
+#
+#   var_bar_server(
+#     id = "polar_bar",
+#     var_per_pc = loading_vector,
+#     sd = sdev_per_pc,
+#     main_title = metagene_id,
+#     sub_title = "Loadings for Metagene",
+#     x_label = "Principal Component",
+#     y_label = "Variance Explained (%)",
+#     bin_width = 0.5,
+#     bar_alpha = 0.1,
+#     polar_cord = TRUE
 #   )
 # }
 # library(rhino)

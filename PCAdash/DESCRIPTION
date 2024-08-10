@@ -2,7 +2,7 @@ Package: PCAdash
 Title: Simple Shiny Package to show PCA results
 Version: 0.1.0
 Authors@R: 
-    person("Priyansh", "Srivastava", , "first.last@example.com", role = c("aut", "cre"),
+    person("Priyansh", "Srivastava", , "spriyansh29@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2618-5296"))
 Description: Simple Shiny Package to show PCA results deployed EC2-t2 Micro with
     Nginx and Docker.

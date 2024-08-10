@@ -5,7 +5,7 @@
 \alias{metagene_results}
 \title{PCA Computations}
 \format{
-An object of class \code{list} of length 53.
+An object of class \code{list} of length 30.
 }
 \usage{
 # Loading
