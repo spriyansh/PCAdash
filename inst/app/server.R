@@ -27,42 +27,69 @@ function(input, output, session) {
     ignoreInit = TRUE
   )
 
-  # bump -3
 
-  # Pass data to ts_xy_server module
+  source("/home/priyansh/gitDockers/PCAdash/R/dynamic_controls.R")
+  vis_params <- vis_params_server("vis_params",
+    plot_type = reactive(input$plot_select),
+    max_bar_pc = reactive(
+      length(metagene_results[[metagene_id()]]$variance_per_pc)
+    )
+  )
+
+
+
+
+
   source("/home/priyansh/gitDockers/PCAdash/R/ts_xy_mod.R")
   ts_xy_server(
     id = "metagene",
     x = pTime,
     y = reactive({
-      # Ensure metagene_id() is not NULL before accessing metagene_results
       req(metagene_id())
       as.numeric(metagene_results[[as.character(metagene_id())]]$PC)
     }),
-    main_title = "A", # Make main_title reactive
+    main_title = "A",
     color_by = "cell_type",
     sub_title = "Metagene Over Pseudotime",
     x_label = "Monocle3 Pseudotime",
     y_label = "Metagene Trend",
-    cell_alpha = reactive(as.numeric(input$cell_alpha)),
-    cell_size = reactive(as.numeric(input$cell_size)),
-    cell_stroke = reactive(as.numeric(input$cell_stroke)),
-    trend_width = reactive(as.numeric(input$trend_width))
+    cell_alpha = vis_params$cell_alpha,
+    cell_size = vis_params$cell_size,
+    cell_stroke = vis_params$cell_stroke,
+    trend_width = vis_params$trend_width
   )
-  #
-  # ss###s sssWssass
-  #   var_bar_server(
-  #     id = "variance_bar",
-  #     var_per_pc = var_per_pc,
-  #     sd = sdev_per_pc,
-  #     main_title = metagene_id,
-  #     sub_title = "Variance Explained Per PC",
-  #     x_label = "Principal Component",
-  #     y_label = "Variance Explained (%)",
-  #     bin_width = 0.5,
-  #     bar_alpha = 0.1
-  #   )
-  #
+
+
+
+
+
+
+
+
+
+  source("/home/priyansh/gitDockers/PCAdash/R/var_bar_mod.R")
+  var_bar_server(
+    id = "variance_bar",
+    var_per_pc = reactive({
+      req(metagene_id())
+      get_variance(
+        metagene_id = metagene_id(),
+        data = metagene_results
+      )[["var_per_pc"]]
+    }),
+    sd = reactive({
+      req(metagene_id())
+      get_variance(metagene_id(), metagene_results)[["sdev_per_pc"]]
+    }),
+    main_title = "A",
+    sub_title = "Variance Explained Per PC",
+    x_label = "Principal Component",
+    y_label = "Variance Explained (%)",
+    bin_width = vis_params$bar_width,
+    bar_alpha = vis_params$bar_alpha,
+    n_bar = vis_params$n_pcs
+  )
+  # Ss
   #   lt_xy_server(
   #     id = "latent_plot",
   #     x = tsne_x,

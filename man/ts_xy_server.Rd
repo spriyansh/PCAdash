@@ -8,18 +8,17 @@ ts_xy_server(
   id,
   x,
   y,
-  main_title,
-  x_label = NULL,
-  y_label = NULL,
-  sub_title = NULL,
+  main_title = "Main Title",
+  x_label = "x_lable",
+  y_label = "y_lable",
+  sub_title = "Sub Title",
   color_by = NULL,
-  trend_width = 2,
-  x_breaks = 5,
-  y_breaks = 1,
+  trend_width = reactive(2),
+  x_breaks = reactive(5),
+  y_breaks = reactive(1),
   cell_stroke = reactive(0.5),
   cell_size = reactive(2),
-  cell_alpha = reactive(0.6),
-  trend_alpha = 0.8
+  cell_alpha = reactive(0.6)
 )
 }
 \arguments{

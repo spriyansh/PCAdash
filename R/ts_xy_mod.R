@@ -1,11 +1,9 @@
 #' @title X-Y Plot UI Module
 #'
 #' @description
-#' A Shiny UI module for rendering a ggplot2-based X-Y plot. This module generates
-#' a plot output element that can be used to display a ggplot2 plot within a Shiny application.
+#' A Shiny UI module for rendering a ggplot2-based X-Y plot.
 #'
-#' @param id A unique identifier for the module, used to distinguish this module's
-#' UI and server components from others within a Shiny application.
+#' @param id A unique identifier for the module.
 #'
 #' @keywords internal
 ts_xy_ui <- function(id) {

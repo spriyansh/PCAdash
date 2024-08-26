@@ -1,5 +1,6 @@
 source("/home/priyansh/gitDockers/PCAdash/R/ts_xy_mod.R")
-
+source("/home/priyansh/gitDockers/PCAdash/R/var_bar_mod.R")
+source("/home/priyansh/gitDockers/PCAdash/R/dynamic_controls.R")
 shiny::navbarPage(
   title = "PCAdash",
   theme = shinythemes::shinytheme("darkly"),
@@ -18,44 +19,20 @@ shiny::navbarPage(
       shiny::selectInput(
         inputId = "plot_select",
         label = "Choose a Plot",
-        choices = list("Metagene Over Pseudotime" = "metagene")
+        choices = list(
+          "Metagene Over Pseudotime" = "metagene",
+          "Variance per PC" = "variance_bar"
+        )
       ),
       hr(),
       shiny::h4("Adjust Visuals "),
-      shiny::sliderInput(
-        inputId = "cell_alpha",
-        label = "Cell Transparency",
-        min = 0,
-        max = 1,
-        value = 0.7
-      ),
-      shiny::sliderInput(
-        inputId = "cell_size",
-        label = "Cell Size",
-        min = 0,
-        max = 1,
-        value = 0.7
-      ),
-      shiny::sliderInput(
-        inputId = "cell_stroke",
-        label = "Cell Stroke",
-        min = 0,
-        max = 1,
-        value = 0.7
-      ),
-      shiny::sliderInput(
-        inputId = "trend_width",
-        label = "Trend Width",
-        min = 0,
-        max = 1,
-        value = 0.7
-      ),
+      vis_params_ui("vis_params"),
       width = 3
     ),
     shiny::mainPanel(
       width = 9,
       shiny::fluidRow(
-        # shiny::column(4, var_bar_ui("variance_bar")),
+        shiny::column(4, var_bar_ui("variance_bar")),
         shiny::column(4, ts_xy_ui("metagene")) # ,
         # shiny::column(4, lt_xy_ui("latent_plot")),
       ),
