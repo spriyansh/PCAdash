@@ -57,17 +57,17 @@ var_bar_server <- function(id,
     module = function(input, output, session) {
       df <- reactive({
         if (polar_cord) {
-          x <- names(var_per_pc)
+          x <- names(var_per_pc())
         } else {
-          x <- paste0("PC", 1:length(var_per_pc))
+          x <- paste0("PC", 1:length(var_per_pc()))
         }
-        percent_var <- (var_per_pc / sum(var_per_pc)) * 100
+        percent_var <- (var_per_pc() / sum(var_per_pc())) * 100
 
         df <- data.frame(
           percent_var = percent_var,
           x = x,
-          sd = sd,
-          var_per_pc = var_per_pc
+          sd = sd(),
+          var_per_pc = var_per_pc()
         )
         return(df)
       })

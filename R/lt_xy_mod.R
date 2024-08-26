@@ -47,13 +47,12 @@ lt_xy_server <- function(id, x, y,
                          y_label = NULL,
                          sub_title = NULL,
                          catgeory = NULL,
-                         cell_stroke = 0.5,
-                         cell_size = 2,
-                         cell_alpha = 0.6,
+                         cell_stroke = reactive(0.5),
+                         cell_size = reactive(2),
+                         cell_alpha = reactive(0.6),
                          color_type = "contnious") {
   color_by <- "color_by"
   dicrete_cell_color <<- c("HSC" = "#56B4E9", "EMP" = "#F0E442", "Early Eryth" = "#009E73")
-
 
   moduleServer(
     id = id,
@@ -65,7 +64,6 @@ lt_xy_server <- function(id, x, y,
           catgeory = catgeory,
           pTime = pTime
         )
-
 
         if (color_type == "discrete") {
           df[["color_by"]] <- df[["catgeory"]]
@@ -82,7 +80,7 @@ lt_xy_server <- function(id, x, y,
         p <- ggplot() +
           geom_point(
             data = df(), aes(x = x, y = y, color = color_by),
-            alpha = cell_alpha, size = cell_size, stroke = cell_stroke
+            alpha = cell_alpha(), size = cell_size(), stroke = cell_stroke()
           ) +
           ggtitle(main_title,
             subtitle = sub_title

@@ -16,9 +16,9 @@ ts_xy_server(
   trend_width = 2,
   x_breaks = 5,
   y_breaks = 1,
-  cell_stroke = 0.5,
-  cell_size = 2,
-  cell_alpha = 0.6,
+  cell_stroke = reactive(0.5),
+  cell_size = reactive(2),
+  cell_alpha = reactive(0.6),
   trend_alpha = 0.8
 )
 }

@@ -12,7 +12,7 @@ multi_ts_xy_server(
   x_label = NULL,
   y_label = NULL,
   sub_title = NULL,
-  color_by = NULL,
+  color_by,
   trend_width = 2,
   x_breaks = 5,
   cell_stroke = 0.5,

@@ -48,7 +48,7 @@ multi_ts_xy_server <- function(id,
                                x_label = NULL,
                                y_label = NULL,
                                sub_title = NULL,
-                               color_by = NULL,
+                               color_by,
                                trend_width = 2,
                                x_breaks = 5,
                                cell_stroke = 0.5,
@@ -63,7 +63,7 @@ multi_ts_xy_server <- function(id,
           x = x,
           color_by = color_by
         )
-        df <- cbind(df, y_matrix)
+        df <- cbind(df, y_matrix())
 
         return(df)
       })
@@ -72,7 +72,7 @@ multi_ts_xy_server <- function(id,
       output$multi_ts_xy <- renderPlot({
         p <- ggplot()
 
-        for (i in colnames(y_matrix)) {
+        for (i in colnames(y_matrix())) {
           p <- p + geom_smooth(
             data = df(), aes(x = x, y = .data[[i]]),
             method = "gam", formula = y ~ s(x, bs = "cs"),

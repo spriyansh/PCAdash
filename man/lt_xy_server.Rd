@@ -14,9 +14,9 @@ lt_xy_server(
   y_label = NULL,
   sub_title = NULL,
   catgeory = NULL,
-  cell_stroke = 0.5,
-  cell_size = 2,
-  cell_alpha = 0.6,
+  cell_stroke = reactive(0.5),
+  cell_size = reactive(2),
+  cell_alpha = reactive(0.6),
   color_type = "contnious"
 )
 }
