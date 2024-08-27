@@ -1,3 +1,8 @@
+## Call
+suppressPackageStartupMessages({
+    library(PCAdash)
+})
+
 ## Make Data available globally
 data("pTime", package = "PCAdash")
 data("metagene_results", package = "PCAdash")

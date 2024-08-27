@@ -22,11 +22,6 @@ remotes::install_github(
     ref        = "main")
 Sys.unsetenv("GITHUB_PAT")
 
-## Call
-suppressPackageStartupMessages({
-  library(PCAdash)
-})
-
 ## Deploy
 rsconnect::deployApp(
   appDir = "inst/app",
