@@ -18,7 +18,7 @@ rsconnect::setAccountInfo(
 
 ## Install PCAdash package from GitHub using auth_token
 Sys.setenv(GITHUB_PAT = Sys.getenv("PUBLIC_INSTALL_GIT_PAT"));
-gitcreds_set(url = "https://github.com", password = Sys.getenv("PUBLIC_INSTALL_GIT_PAT"))
+gitcreds::gitcreds_set(url = "https://github.com", Sys.getenv("PUBLIC_INSTALL_GIT_PAT"))
 remotes::install_github(
     repo       = "spriyansh/PCAdash",
     ref        = "main")
