@@ -14,7 +14,7 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libcurl4-openssl-dev
+        sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
 
     - uses: actions/checkout@v3
 
