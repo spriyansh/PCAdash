@@ -1,5 +1,6 @@
 ## Install packages
-install.packages(c("rsconnect", "devtools"))
+install.packages(c("rsconnect", "devtools"),
+                 repos = "https://cloud.r-project.org/")
 
 ## Load Rsconnect
 suppressPackageStartupMessages({
