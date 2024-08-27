@@ -1,5 +1,5 @@
 ## Install packages
-install.packages(c("rsconnect", "remotes", "gitcreds"),
+install.packages(c("rsconnect", "remotes"),
                  repos = "https://cloud.r-project.org/")
 
 ## Load Rsconnect
@@ -12,7 +12,6 @@ suppressPackageStartupMessages({
 ## Set PAT
 Sys.setenv(GITHUB_PAT = Sys.getenv("PUBLIC_INSTALL_GIT_PAT"))
 
-
 ## Set keys
 rsconnect::setAccountInfo(
   name = Sys.getenv("RSCONNECT_NAME"),
@@ -20,11 +19,13 @@ rsconnect::setAccountInfo(
   secret = Sys.getenv("RSCONNECT_SECRET")
 )
 
-## PCA dash install
+## Install PCAdash package from GitHub using auth_token
 remotes::install_github(
-    repo = "spriyansh/PCAdash",
-    ref = "main"
+    repo       = "spriyansh/PCAdash",
+    ref        = "main",
+    auth_token = Sys.getenv("PUBLIC_INSTALL_GIT_PAT")
 )
+
 
 ## Call
 suppressPackageStartupMessages({
