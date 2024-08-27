@@ -35,9 +35,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install Required Packages
+        run: |
+          install.packages('shiny')
+          install.packages('remotes')
+        shell: Rscript {0}
+
       - name: Install R Package Dependencies
         run: |
-          install.packages('remotes')
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
