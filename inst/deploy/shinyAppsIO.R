@@ -17,12 +17,11 @@ rsconnect::setAccountInfo(
 )
 
 ## Install PCAdash package from GitHub using auth_token
+Sys.setenv(GITHUB_PAT = Sys.getenv("PUBLIC_INSTALL_GIT_PAT"));
 devtools::install_github(
     repo       = "spriyansh/PCAdash",
-    ref        = "main",
-    auth_token = Sys.getenv("PUBLIC_INSTALL_GIT_PAT")
-)
-
+    ref        = "main")
+Sys.unsetenv("PUBLIC_INSTALL_GIT_PAT")
 
 ## Call
 suppressPackageStartupMessages({
