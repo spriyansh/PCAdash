@@ -1,4 +1,4 @@
-name: R-CRAN-Check
+name: R-CMD-Check
 
 on:
   push:
@@ -7,18 +7,19 @@ on:
     branches: [ "main" ]
 
 jobs:
-  R-CRAN-Check:
+  R-CMD-check:
     runs-on: ${{ matrix.config.os }}
+
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest, r: 'release'}
+          - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'devel'}
-          - {os: ubuntu-latest, r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -27,43 +28,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install qpdf (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install qpdf
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
 
-      # Install shiny package directly
-      - name: Install Shiny package directly
-        run: |
-          R -e 'install.packages("shiny", repos = "https://cloud.r-project.org/")'
-        shell: bash
-
-      # List installed packages and session info
-      - name: List Installed Packages
-        run: |
-          R -e 'installed.packages()'
-          R -e 'sessionInfo()'
-        shell: bash
-
-      # Proceed with package dependencies installation
-      - name: Install R Package Dependencies
-        run: |
-          R -e 'install.packages("remotes", repos = "https://cloud.r-project.org/")'
-          R -e 'remotes::install_deps(dependencies = TRUE)'
-        shell: bash
-
-      # Final package check
-      - name: Check R Package
-        uses: r-lib/actions/check-r-package@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          upload-snapshots: false
-          error-on: "error"
-          warnings-are-errors: true
+          extra-packages: any::rcmdcheck
+          needs: check
 
-      - name: Upload R CMD Check Results
-        if: failure()
-        uses: actions/upload-artifact@v3
+      - uses: r-lib/actions/check-r-package@v2
         with:
-          name: r-cmd-check-results
-          path: check/*.Rcheck
+          upload-snapshots: true
