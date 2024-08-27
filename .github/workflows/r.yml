@@ -12,7 +12,7 @@ jobs:
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         config:
           - {os: macos-latest, r: 'release'}
@@ -35,10 +35,23 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Install R Package Dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: rcmdcheck
+          # Ensure all packages in DESCRIPTION are installed
+          action: "install"
 
-      - uses: r-lib/actions/check-r-package@v2
+      - name: Check R Package
+        uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
+          error-on: "error"  # Fail the action on any R CMD check error
+          warnings-are-errors: true  # Treat warnings as errors
+
+      - name: Upload R CMD Check Results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: r-cmd-check-results
+          path: check/*.Rcheck
