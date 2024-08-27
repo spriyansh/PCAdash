@@ -5,7 +5,7 @@ install.packages(c("rsconnect", "remotes"),
 ## Load Rsconnect
 suppressPackageStartupMessages({
   library(rsconnect)
-  library(devtools)
+  library(remotes)
 })
 
 ## Set keys
