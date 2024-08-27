@@ -9,7 +9,7 @@ suppressPackageStartupMessages({
 })
 
 ## Set PAT
-Sys.setenv(GITHUB_PAT = Sys.getenv("GITHUB_PAT"))
+Sys.setenv(GITHUB_PAT = Sys.getenv("PUBLIC_INSTALL_GIT_PAT"))
 
 ## Set keys
 rsconnect::setAccountInfo(
