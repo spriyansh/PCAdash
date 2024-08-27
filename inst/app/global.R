@@ -1,6 +1,6 @@
 ## Call
 suppressPackageStartupMessages({
-    library(PCAdash)
+  library(PCAdash)
 })
 
 ## Make Data available globally

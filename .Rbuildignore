@@ -7,3 +7,4 @@ deploy.R
 inst/app/rsconnect
 dev
 .Rprofile
+.github
