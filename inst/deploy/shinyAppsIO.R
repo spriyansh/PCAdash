@@ -31,5 +31,6 @@ suppressPackageStartupMessages({
 rsconnect::deployApp(
   appDir = "inst/app",
   appName = "PCAdash",
-  logLevel = "verbose"
+  logLevel = "verbose",
+  forceUpdate = TRUE
 )
