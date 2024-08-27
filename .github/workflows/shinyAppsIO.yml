@@ -1,0 +1,31 @@
+name: Deploy to ShinyAppsIO
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
+
+    - uses: actions/checkout@v3
+
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v2
+
+    - name: Deploy Shiny App
+      env:
+        RSCONNECT_NAME: ${{ secrets.RSCONNECT_NAME }}
+        RSCONNECT_TOKEN: ${{ secrets.RSCONNECT_TOKEN }}
+        RSCONNECT_SECRET: ${{ secrets.RSCONNECT_SECRET }}
+        GITHUB_PAT: ${{ secrets.PUBLIC_INSTALL_GIT_PAT }}
+      run: |
+        Rscript inst/deploy/shinyAppsIO.R
