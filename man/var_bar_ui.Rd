@@ -7,11 +7,8 @@
 var_bar_ui(id)
 }
 \arguments{
-\item{id}{A unique identifier for the module, used to distinguish this module's
-UI and server components from others within a Shiny application.}
+\item{id}{A unique identifier for the module.}
 }
 \description{
-A Shiny UI module for rendering a ggplot2-based Bar plot. This module generates
-a plot output element that can be used to display a ggplot2 plot within a Shiny application.
+A Shiny UI module for rendering a ggplot2-based Bar plot.
 }
-\keyword{internal}

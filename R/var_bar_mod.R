@@ -6,7 +6,7 @@
 #' @param id A unique identifier for the module.
 #'
 #'
-#' @keywords internal
+#' @export
 var_bar_ui <- function(id) {
   ns <- NS(id)
   plotOutput(outputId = ns("var_bar"))
@@ -25,6 +25,7 @@ var_bar_ui <- function(id) {
 #' principal component (PC).
 #' @param sd A numeric vector representing the standard deviation associated with
 #' each principal component's variance.
+#' @param n_bar The number of bars to display in the plot. Defaults to 5.
 #' @param main_title The main title of the plot.
 #' @param x_label The label for the x-axis. Defaults to NULL.
 #' @param y_label The label for the y-axis. Defaults to NULL.
@@ -33,17 +34,11 @@ var_bar_ui <- function(id) {
 #' @param bar_alpha The transparency level of the bars. Defaults to 0.7.
 #' @param polar_cord A logical value indicating whether to use polar coordinates for the plot. Defaults to FALSE.
 #'
-#' @details
-#' This module calculates the percentage of variance explained by each principal component
-#' and generates a bar plot with error bars to indicate standard deviations. The plot is
-#' rendered using ggplot2 with a minimalist theme and can be customized through various
-#' parameters. It also includes options to display the percentage of variance on top of each bar.
-#'
-#' @keywords internal
+#' @export
 var_bar_server <- function(id,
                            var_per_pc,
                            sd,
-                           n_bar = 5,
+                           n_bar = reactive(5),
                            main_title,
                            x_label = NULL,
                            y_label = NULL,
@@ -54,6 +49,7 @@ var_bar_server <- function(id,
   moduleServer(
     id = id,
     module = function(input, output, session) {
+      dicrete_cell_color <- "dicrete_cell_color"
       df <- reactive({
         if (polar_cord) {
           x <- names(var_per_pc())
@@ -82,7 +78,7 @@ var_bar_server <- function(id,
             x = x_label,
             y = y_label
           ) +
-          black_theme
+          black_theme()
 
         if (polar_cord) {
           p <- p +

@@ -8,12 +8,13 @@ var_bar_server(
   id,
   var_per_pc,
   sd,
+  n_bar = reactive(5),
   main_title,
   x_label = NULL,
   y_label = NULL,
   sub_title = NULL,
-  bin_width = 0.5,
-  bar_alpha = 0.7,
+  bin_width = reactive(0.5),
+  bar_alpha = reactive(0.7),
   polar_cord = FALSE
 )
 }
@@ -26,6 +27,8 @@ principal component (PC).}
 
 \item{sd}{A numeric vector representing the standard deviation associated with
 each principal component's variance.}
+
+\item{n_bar}{The number of bars to display in the plot. Defaults to 5.}
 
 \item{main_title}{The main title of the plot.}
 
@@ -46,10 +49,3 @@ A Shiny server module that renders a ggplot2-based bar plot representing the var
 explained by each principal component (PC). This module supports customization options
 for titles, axis labels, and aesthetics such as bar width and transparency.
 }
-\details{
-This module calculates the percentage of variance explained by each principal component
-and generates a bar plot with error bars to indicate standard deviations. The plot is
-rendered using ggplot2 with a minimalist theme and can be customized through various
-parameters. It also includes options to display the percentage of variance on top of each bar.
-}
-\keyword{internal}

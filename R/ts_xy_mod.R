@@ -5,7 +5,7 @@
 #'
 #' @param id A unique identifier for the module.
 #'
-#' @keywords internal
+#' @export
 ts_xy_ui <- function(id) {
   ns <- NS(id)
   plotOutput(outputId = ns("ts_xy"))
@@ -34,11 +34,12 @@ ts_xy_ui <- function(id) {
 #' @param cell_stroke The stroke width of the points.
 #' @param cell_size The size of the points.
 #' @param cell_alpha The transparency level of the points.
-#' @param trend_alpha The transparency level of the trend line.
 #'
 #' @import ggplot2
 #'
-#' @keywords internal
+#' @importFrom stats complete.cases
+#'
+#' @export
 ts_xy_server <- function(id,
                          x,
                          y,
@@ -92,7 +93,7 @@ ts_xy_server <- function(id,
           ) +
           xlab(x_label) +
           ylab(y_label) +
-          black_theme #+
+          black_theme() #+
         # scale_color_manual(values = dicrete_cell_color) +
         # scale_x_continuous(
         #   limits = c(0, max(df()[["x"]])) + 1.5,

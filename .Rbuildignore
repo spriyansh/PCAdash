@@ -1,3 +1,8 @@
+^renv$
+^renv\.lock$
 ^PCAdash\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+deploy.R
+inst/app/rsconnect
+dev

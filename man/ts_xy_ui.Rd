@@ -12,4 +12,3 @@ ts_xy_ui(id)
 \description{
 A Shiny UI module for rendering a ggplot2-based X-Y plot.
 }
-\keyword{internal}

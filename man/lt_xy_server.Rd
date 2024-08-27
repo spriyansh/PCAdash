@@ -57,4 +57,3 @@ longitudinal data over time, with options for continuous or discrete color scali
 This module supports customization of plot aesthetics such as point size, stroke,
 and transparency, along with titles and axis labels.
 }
-\keyword{internal}

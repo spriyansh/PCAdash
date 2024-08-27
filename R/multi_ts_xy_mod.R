@@ -1,13 +1,11 @@
 #' @title Multi X-Y Plot UI Module
 #'
 #' @description
-#' A Shiny UI module for rendering a ggplot2-based X-Y plot. This module generates
-#' a plot output element that can be used to display a ggplot2 plot within a Shiny application.
+#' A Shiny UI module for rendering a ggplot2-based X-Y plot.
 #'
-#' @param id A unique identifier for the module, used to distinguish this module's
-#' UI and server components from others within a Shiny application.
+#' @param id A unique identifier for the module.
 #'
-#' @keywords internal
+#' @export
 multi_ts_xy_ui <- function(id) {
   ns <- NS(id)
   plotOutput(outputId = ns("multi_ts_xy"))
@@ -40,24 +38,25 @@ multi_ts_xy_ui <- function(id) {
 #' @import ggplot2
 #' @import shiny
 #'
-#' @keywords internal
+#' @export
 multi_ts_xy_server <- function(id,
                                x,
                                y_matrix,
-                               main_title,
-                               x_label = NULL,
-                               y_label = NULL,
-                               sub_title = NULL,
+                               main_title = "Main-title",
+                               x_label = "x-label",
+                               y_label = "y-label",
+                               sub_title = "Sub-title",
                                color_by,
-                               trend_width = 2,
-                               x_breaks = 5,
-                               cell_stroke = 0.5,
-                               cell_size = 2,
-                               cell_alpha = 0.6,
-                               trend_alpha = 0.8) {
+                               trend_width = reactive(2),
+                               x_breaks = reactive(5),
+                               cell_stroke = reactive(0.5),
+                               cell_size = reactive(2),
+                               cell_alpha = reactive(0.6),
+                               trend_alpha = reactive(0.8)) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
+      dicrete_cell_color <- "dicrete_cell_color"
       df <- reactive({
         df <- data.frame(
           x = x,
@@ -74,10 +73,10 @@ multi_ts_xy_server <- function(id,
 
         for (i in colnames(y_matrix())) {
           p <- p + geom_smooth(
-            data = df(), aes(x = x, y = .data[[i]]),
+            data = df(), aes(x = .data$x, y = .data[[i]]),
             method = "gam", formula = y ~ s(x, bs = "cs"),
-            se = FALSE, linewidth = trend_width, color = "#fde725",
-            alpha = trend_alpha, linetype = "solid"
+            se = FALSE, linewidth = trend_width(), color = "#fde725",
+            linetype = "solid"
           )
         }
         p <- p + ggtitle(main_title,
@@ -85,33 +84,7 @@ multi_ts_xy_server <- function(id,
         ) +
           xlab(x_label) +
           ylab(y_label) +
-          theme_linedraw() +
-
-          theme(
-            panel.border = element_blank(),
-            panel.background = element_blank(),
-            plot.background = element_rect(color = "#222222", fill = "#222222"),
-            plot.title = element_text(color = "white", size = rel(1.5)),
-            plot.subtitle = element_text(color = "white", size = rel(1.5)),
-            panel.grid.major = element_line(linewidth = rel(0.1), linetype = 2, colour = "#f6f6f6"),
-            panel.grid.minor = element_blank(),
-            axis.text = element_text(colour = "white", size = rel(1.2)),
-            axis.line.x = element_line(arrow = arrow(
-              angle = 15, length = unit(0.5, "cm"),
-              ends = "last", type = "closed"
-            ), colour = "white"),
-            axis.line.y = element_line(arrow = arrow(
-              angle = 15, length = unit(0.5, "cm"),
-              ends = "last", type = "closed"
-            ), colour = "white"),
-            axis.ticks = element_line(colour = "white"),
-            axis.title = element_text(color = "white", size = rel(1.25)),
-            legend.position = "none"
-          ) +
-          scale_x_continuous(
-            limits = c(0, max(df()[["x"]])) + 1.5,
-            breaks = round(seq(0, max(df()[["x"]]) + x_breaks, by = x_breaks))
-          )
+          black_theme()
         return(p)
         # scale_y_continuous(
         #     limits = c(min(df()[["y"]]), max(df()[["y"]]) + 1.5),

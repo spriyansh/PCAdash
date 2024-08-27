@@ -50,8 +50,6 @@ UI and server components from others within a Shiny application.}
 \item{cell_size}{The size of the points.}
 
 \item{cell_alpha}{The transparency level of the points.}
-
-\item{trend_alpha}{The transparency level of the trend line.}
 }
 \description{
 A Shiny server module that handles the rendering of a ggplot2-based X-Y plot.
@@ -59,4 +57,3 @@ This module accepts x and y values as inputs and provides various customization
 options for rendering a detailed line plot with trend lines, titles, axis labels,
 and aesthetic customizations.
 }
-\keyword{internal}

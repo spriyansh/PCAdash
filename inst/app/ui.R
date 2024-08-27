@@ -1,6 +1,8 @@
-source("/home/priyansh/gitDockers/PCAdash/R/ts_xy_mod.R")
-source("/home/priyansh/gitDockers/PCAdash/R/var_bar_mod.R")
-source("/home/priyansh/gitDockers/PCAdash/R/dynamic_controls.R")
+# source("/home/priyansh/gitDockers/PCAdash/R/ts_xy_mod.R")
+# source("/home/priyansh/gitDockers/PCAdash/R/var_bar_mod.R")
+# source("/home/priyansh/gitDockers/PCAdash/R/dynamic_controls.R")
+# source("/home/priyansh/gitDockers/PCAdash/R/lt_xy_mod.R")
+# source("/home/priyansh/gitDockers/PCAdash/R/multi_ts_xy_mod.R")
 shiny::navbarPage(
   title = "PCAdash",
   theme = shinythemes::shinytheme("darkly"),
@@ -15,33 +17,42 @@ shiny::navbarPage(
         label = "Choose a Pathway:",
         choices = NULL
       ),
+      shiny::selectInput(
+        inputId = "gene_select",
+        label = "Choose a gene:",
+        choices = NULL
+      ),
       hr(),
       shiny::selectInput(
         inputId = "plot_select",
         label = "Choose a Plot",
         choices = list(
           "Metagene Over Pseudotime" = "metagene",
-          "Variance per PC" = "variance_bar"
+          "Variance per PC" = "variance_bar",
+          "t-SNE Plot" = "latent_plot",
+          "Contributing Genes" = "contri_features",
+          "Single Contributing Genes" = "contri_features_single",
+          "Loadings" = "variance_polar"
         )
       ),
       hr(),
       shiny::h4("Adjust Visuals "),
-      vis_params_ui("vis_params"),
+      uiOutput("dynamic_vis_params_ui"),
       width = 3
     ),
     shiny::mainPanel(
       width = 9,
       shiny::fluidRow(
         shiny::column(4, var_bar_ui("variance_bar")),
-        shiny::column(4, ts_xy_ui("metagene")) # ,
-        # shiny::column(4, lt_xy_ui("latent_plot")),
+        shiny::column(4, ts_xy_ui("metagene")),
+        shiny::column(4, lt_xy_ui("latent_plot")),
       ),
-      shiny::br(), shiny::br() # sss,
-      # shiny::fluidRow(
-      #   shiny::column(4, multi_ts_xy_ui("contri_genes")),
-      #   shiny::column(4, ts_xy_ui("contri_single")),
-      #   shiny::column(4, var_bar_ui("polar_bar"))
-      # )
+      shiny::br(), shiny::br(),
+      shiny::fluidRow(
+        shiny::column(4, multi_ts_xy_ui("contri_genes")),
+        shiny::column(4, ts_xy_ui("contri_single")),
+        shiny::column(4, var_bar_ui("polar_bar"))
+      )
     )
   ),
   br(), br(),

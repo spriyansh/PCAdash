@@ -8,17 +8,17 @@ multi_ts_xy_server(
   id,
   x,
   y_matrix,
-  main_title,
-  x_label = NULL,
-  y_label = NULL,
-  sub_title = NULL,
+  main_title = "Main-title",
+  x_label = "x-label",
+  y_label = "y-label",
+  sub_title = "Sub-title",
   color_by,
-  trend_width = 2,
-  x_breaks = 5,
-  cell_stroke = 0.5,
-  cell_size = 2,
-  cell_alpha = 0.6,
-  trend_alpha = 0.8
+  trend_width = reactive(2),
+  x_breaks = reactive(5),
+  cell_stroke = reactive(0.5),
+  cell_size = reactive(2),
+  cell_alpha = reactive(0.6),
+  trend_alpha = reactive(0.8)
 )
 }
 \arguments{
@@ -57,4 +57,3 @@ This module accepts x and y values as inputs and provides various customization
 options for rendering a detailed line plot with trend lines, titles, axis labels,
 and aesthetic customizations.
 }
-\keyword{internal}
