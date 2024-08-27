@@ -8,6 +8,9 @@ suppressPackageStartupMessages({
   library(remotes)
 })
 
+## Set PAT
+Sys.setenv(GITHUB_PAT = Sys.getenv("PUBLIC_INSTALL_GIT_PAT"))
+
 ## Set keys
 rsconnect::setAccountInfo(
   name = Sys.getenv("RSCONNECT_NAME"),
