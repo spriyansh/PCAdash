@@ -35,10 +35,23 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Create custom library path
+        run: |
+          mkdir -p ~/.R/library
+          echo "R_LIBS_USER=~/.R/library" >> ~/.Renviron
+
       - name: Install R Package Dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: shiny
+        run: |
+          install.packages('shiny', repos = 'https://cloud.r-project.org/', lib = '~/.R/library')
+          install.packages('remotes', repos = 'https://cloud.r-project.org/', lib = '~/.R/library')
+          remotes::install_deps(dependencies = TRUE, lib = '~/.R/library')
+        shell: Rscript {0}
+
+      - name: Verify Installed Packages
+        run: |
+          .libPaths()
+          installed.packages(lib.loc = "~/.R/library")
+        shell: Rscript {0}
 
       - name: Check R Package
         uses: r-lib/actions/check-r-package@v2
@@ -46,6 +59,8 @@ jobs:
           upload-snapshots: false
           error-on: "error"
           warnings-are-errors: true
+        env:
+          R_LIBS_USER: ~/.R/library
 
       - name: Upload R CMD Check Results
         if: failure()
