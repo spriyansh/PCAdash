@@ -10,8 +10,8 @@ suppressPackageStartupMessages({
 })
 
 ## Set PAT
-pat <- Sys.getenv("PUBLIC_INSTALL_GIT_PAT")
-gitcreds::gitcreds_set(pat)
+Sys.setenv(GITHUB_PAT = Sys.getenv("PUBLIC_INSTALL_GIT_PAT"))
+
 
 ## Set keys
 rsconnect::setAccountInfo(
