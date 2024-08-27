@@ -1,5 +1,5 @@
 ## Install packages
-install.packages(c("rsconnect", "devtools"),
+install.packages(c("rsconnect", "remotes"),
                  repos = "https://cloud.r-project.org/")
 
 ## Load Rsconnect
@@ -16,9 +16,9 @@ rsconnect::setAccountInfo(
 )
 
 ## PCA dash install
-devtools::install_github(
-  repo = "spriyansh/PCAdash",
-  ref = "main"
+remotes::install_github(
+    repo = "spriyansh/PCAdash",
+    ref = "main"
 )
 
 ## Call
