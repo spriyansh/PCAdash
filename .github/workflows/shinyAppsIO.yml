@@ -9,7 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    needs: R-CMD-check  # This ensures deployment only happens after checks pass
     if: ${{ success() }}  # This ensures deployment only if all checks succeed
 
     steps:
