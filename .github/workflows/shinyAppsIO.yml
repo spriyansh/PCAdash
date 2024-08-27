@@ -26,5 +26,6 @@ jobs:
         RSCONNECT_NAME: ${{ secrets.RSCONNECT_NAME }}
         RSCONNECT_TOKEN: ${{ secrets.RSCONNECT_TOKEN }}
         RSCONNECT_SECRET: ${{ secrets.RSCONNECT_SECRET }}
+        GITHUB_PAT: ${{ secrets.PUBLIC_INSTALL_GIT_PAT }}
       run: |
         Rscript inst/deploy/shinyAppsIO.R

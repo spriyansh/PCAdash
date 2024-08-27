@@ -1,12 +1,11 @@
 ## Install packages
-install.packages(c("rsconnect", "remotes", "gitcreds"),
+install.packages(c("rsconnect", "remotes"),
                  repos = "https://cloud.r-project.org/")
 
 ## Load Rsconnect
 suppressPackageStartupMessages({
   library(rsconnect)
     library(remotes)
-    library(gitcreds)
 })
 
 ## Set keys
@@ -17,11 +16,11 @@ rsconnect::setAccountInfo(
 )
 
 ## Install PCAdash package from GitHub using auth_token
-gitcreds_delete(url = "https://github.com")
-gitcreds::gitcreds_set("PUBLIC_INSTALL_GIT_PAT")
+Sys.setenv(GITHUB_PAT = Sys.getenv("GITHUB_PAT"))
 remotes::install_github(
     repo       = "spriyansh/PCAdash",
     ref        = "main")
+Sys.unsetenv("GITHUB_PAT")
 
 ## Call
 suppressPackageStartupMessages({
