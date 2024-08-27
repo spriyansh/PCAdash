@@ -6,7 +6,6 @@ install.packages(c("rsconnect", "remotes"),
 suppressPackageStartupMessages({
   library(rsconnect)
   library(remotes)
-  library(gitcreds)
 })
 
 ## Set PAT
