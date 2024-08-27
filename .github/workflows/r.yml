@@ -17,7 +17,7 @@ jobs:
         config:
           - {os: macos-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest, r: 'devel'}
           - {os: ubuntu-latest, r: 'release'}
 
     env:
@@ -32,35 +32,34 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
 
-      - name: Create custom library path
+      # Install shiny package directly
+      - name: Install Shiny package directly
         run: |
-          mkdir -p ~/.R/library
-          echo "R_LIBS_USER=~/.R/library" >> ~/.Renviron
+          R -e 'install.packages("shiny", repos = "https://cloud.r-project.org/")'
+        shell: bash
 
+      # List installed packages and session info
+      - name: List Installed Packages
+        run: |
+          R -e 'installed.packages()'
+          R -e 'sessionInfo()'
+        shell: bash
+
+      # Proceed with package dependencies installation
       - name: Install R Package Dependencies
         run: |
-          install.packages('shiny', repos = 'https://cloud.r-project.org/', lib = '~/.R/library')
-          install.packages('remotes', repos = 'https://cloud.r-project.org/', lib = '~/.R/library')
-          remotes::install_deps(dependencies = TRUE, lib = '~/.R/library')
-        shell: Rscript {0}
+          R -e 'install.packages("remotes", repos = "https://cloud.r-project.org/")'
+          R -e 'remotes::install_deps(dependencies = TRUE)'
+        shell: bash
 
-      - name: Verify Installed Packages
-        run: |
-          .libPaths()
-          installed.packages(lib.loc = "~/.R/library")
-        shell: Rscript {0}
-
+      # Final package check
       - name: Check R Package
         uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
           error-on: "error"
           warnings-are-errors: true
-        env:
-          R_LIBS_USER: ~/.R/library
 
       - name: Upload R CMD Check Results
         if: failure()
