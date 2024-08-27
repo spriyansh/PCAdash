@@ -36,11 +36,10 @@ jobs:
           use-public-rspm: true
 
       - name: Install R Package Dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: rcmdcheck
-          # Ensure all packages in DESCRIPTION are installed
-          action: "install"
+        run: |
+          install.packages('remotes')
+          remotes::install_deps(dependencies = TRUE)
+        shell: Rscript {0}
 
       - name: Check R Package
         uses: r-lib/actions/check-r-package@v2
