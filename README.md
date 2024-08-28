@@ -2,8 +2,7 @@
 #### Visualization of PCA-Metegenes using R-Shiny at single-cell resolution
 
 <a href="https://priyansh-srivastava.shinyapps.io/PCAdash/" target="_blank">
-  <img src="https://img.shields.io/badge/Launch%20on%20ShinyAppsIO-009E73?style=for-the-badge" alt="Launch on shinyApps IO">
-</a> <a href="https://priyansh-srivastava.shinyapps.io/PCAdash/" target="_blank">
+  <img src="https://img.shields.io/badge/Launch%20on%20ShinyAppsIO-009E73?style=for-the-badge" alt="Launch on shinyApps IO"></a>    <a href="https://priyansh-srivastava.shinyapps.io/PCAdash/" target="_blank">
   <img src="https://img.shields.io/badge/Launch%20on%20AWS%20EC2-0072B2?style=for-the-badge" alt="Launch on AWS-EC2">
 </a>
 
@@ -31,6 +30,15 @@ I designed this application to present some of the work from my PhD project on P
 
 [![R-CMD-Check](https://github.com/spriyansh/PCAdash/actions/workflows/cmd-check.yml/badge.svg?branch=main)](https://github.com/spriyansh/PCAdash/actions/workflows/cmd-check.yml)
 [![ShinyAppsIO](https://github.com/spriyansh/PCAdash/actions/workflows/shinyAppsIO.yml/badge.svg?branch=main)](https://github.com/spriyansh/PCAdash/actions/workflows/shinyAppsIO.yml)
+
+
+```mermaid
+graph TD;
+    Main-Branch-->|Push|B;
+    B-->|Path-2|C;
+    B-->|Path-3|D;
+```
+
 
 ---
 
