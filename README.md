@@ -34,9 +34,13 @@ I designed this application to present some of the work from my PhD project on P
 
 ```mermaid
 graph TD;
-    Main-Branch-->|Push|B;
-    B-->|Path-2|C;
-    B-->|Path-3|D;
+    feature/change-->|Pull-Request|Develop-Branch;
+    Develop-Branch-->|Trigger|R-CMD-Check;
+    change-->|Push|Develop-Branch;
+    Develop-Branch-->|Pull-Request|Main-Branch;
+    Main-Branch-->|Trigger|R-CMD-Check;
+    Main-Branch-->|Trigger|Deploy-ShinyAppsIO;
+    
 ```
 
 
