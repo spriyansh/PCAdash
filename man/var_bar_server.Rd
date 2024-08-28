@@ -15,7 +15,8 @@ var_bar_server(
   sub_title = NULL,
   bin_width = reactive(0.5),
   bar_alpha = reactive(0.7),
-  polar_cord = FALSE
+  polar_cord = FALSE,
+  activate_legend = reactive(FALSE)
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ each principal component's variance.}
 \item{bar_alpha}{The transparency level of the bars. Defaults to 0.7.}
 
 \item{polar_cord}{A logical value indicating whether to use polar coordinates for the plot. Defaults to FALSE.}
+
+\item{activate_legend}{A logical value indicating whether to activate the legend. Defaults to FALSE.}
 }
 \description{
 A Shiny server module that renders a ggplot2-based bar plot representing the variance

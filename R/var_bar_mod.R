@@ -33,6 +33,7 @@ var_bar_ui <- function(id) {
 #' @param bin_width The width of the bars in the plot. Defaults to 0.5.
 #' @param bar_alpha The transparency level of the bars. Defaults to 0.7.
 #' @param polar_cord A logical value indicating whether to use polar coordinates for the plot. Defaults to FALSE.
+#' @param activate_legend A logical value indicating whether to activate the legend. Defaults to FALSE.
 #'
 #' @export
 var_bar_server <- function(id,
@@ -45,7 +46,8 @@ var_bar_server <- function(id,
                            sub_title = NULL,
                            bin_width = reactive(0.5),
                            bar_alpha = reactive(0.7),
-                           polar_cord = FALSE) {
+                           polar_cord = FALSE,
+                           activate_legend = reactive(FALSE)) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
@@ -71,31 +73,32 @@ var_bar_server <- function(id,
       output$var_bar <- renderPlot({
         # Bar plot for Variance
         p <- ggplot() +
-          theme_minimal() +
           labs(
             title = main_title,
             subtitle = sub_title,
             x = x_label,
             y = y_label
           ) +
-          black_theme()
+          black_theme(activate = activate_legend())
 
         if (polar_cord) {
           p <- p +
             geom_bar(
-              data = df(),
-              aes(x = x, y = var_per_pc),
-              stat = "identity", fill = "#21918c", color = "#f98e09",
+              data = df()[c(1:n_bar()), , drop = FALSE],
+              aes(x = x, y = var_per_pc, fill = var_per_pc > 0),
+              stat = "identity", color = "#f98e09",
               width = bin_width(), alpha = bar_alpha()
-            ) + geom_text(
-              data = df(),
+            ) +
+            geom_text(
+              data = df()[c(1:n_bar()), , drop = FALSE],
               aes(
                 x = x, y = var_per_pc,
-                label = round(var_per_pc, 1),
-              ), vjust = -1, size = 5,
+                label = round(var_per_pc, 1)
+              ), vjust = ifelse(df()[c(1:n_bar()), , drop = FALSE]$var_per_pc >= 0, -0.5, 1.5), size = 5,
               color = "#fcffa4"
             ) +
-            coord_polar(theta = "x", clip = "off") + theme(
+            scale_fill_manual(values = c("#21918c", "#f98e09")) +
+            theme(
               axis.line.x = element_blank(),
               axis.line.y = element_blank(),
               axis.text.y = element_blank(),
@@ -103,8 +106,12 @@ var_bar_server <- function(id,
               axis.text.x = element_text(
                 colour = "white", size = rel(1)
               ),
+              legend.position = "none"
             ) +
-            xlab("") + ylab("")
+            coord_flip() +
+            xlab("") + ylab("") + theme_void() + black_theme(
+              activate = activate_legend()
+            )
           return(p)
         } else {
           p <- p +
