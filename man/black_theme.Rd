@@ -2,10 +2,13 @@
 % Please edit documentation in R/zzz.R
 \name{black_theme}
 \alias{black_theme}
-\title{Black Theme for ggplot2}
+\title{Custom black theme for ggplot2 objects}
 \usage{
-black_theme()
+black_theme(activate = FALSE)
+}
+\arguments{
+\item{activate}{A logical value indicating whether to activate the theme. Defaults to FALSE.}
 }
 \description{
-This function applies a custom black theme to ggplot2 plots. The theme includes a black background, white text, and other customized elements.
+This function applies a custom black theme to ggplot2 plots.
 }

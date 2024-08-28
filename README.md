@@ -33,7 +33,7 @@ I designed this application to present some of the work from my PhD project on P
 
 
 ```mermaid
-graph TD;
+graph LR;
     feature/change-->|Pull-Request|Develop-Branch;
     Develop-Branch-->|Trigger|R-CMD-Check;
     change-->|Push|Develop-Branch;
