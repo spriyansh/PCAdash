@@ -11,6 +11,7 @@ dicrete_cell_color <- c("HSC" = "#56B4E9", "EMP" = "#F0E442", "Early Eryth" = "#
 #'
 #' @export
 black_theme <- function(activate = FALSE) {
+  # Activate Selected plot
   if (activate) {
     axis_color <- "#FEF900"
   } else {

@@ -7,6 +7,5 @@
 #' @export
 #'
 run_app <- function() {
-  options(shiny.autoreload = TRUE)
   shiny::runApp(appDir = system.file("app", package = "PCAdash"))
 }

@@ -1,10 +1,4 @@
 function(input, output, session) {
-  # source("/home/priyansh/gitDockers/PCAdash/R/dynamic_control_mod.R")
-  # source("/home/priyansh/gitDockers/PCAdash/R/ts_xy_mod.R")
-  # source("/home/priyansh/gitDockers/PCAdash/R/lt_xy_mod.R")
-  # source("/home/priyansh/gitDockers/PCAdash/R/multi_ts_xy_mod.R")
-  # source("/home/priyansh/gitDockers/PCAdash/R/zzz.R")
-
   # Initialize reactiveVal for metagene_id
   metagene_id <- reactiveVal(NULL)
   gene_list <- reactiveVal(NULL)

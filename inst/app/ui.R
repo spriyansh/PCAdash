@@ -1,8 +1,3 @@
-# source("/home/priyansh/gitDockers/PCAdash/R/ts_xy_mod.R")
-# source("/home/priyansh/gitDockers/PCAdash/R/var_bar_mod.R")
-# source("/home/priyansh/gitDockers/PCAdash/R/dynamic_control_mod.R")
-# source("/home/priyansh/gitDockers/PCAdash/R/lt_xy_mod.R")
-# source("/home/priyansh/gitDockers/PCAdash/R/multi_ts_xy_mod.R")
 shiny::navbarPage(
   title = "PCAdash",
   theme = shinythemes::shinytheme("darkly"),
