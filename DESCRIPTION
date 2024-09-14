@@ -6,7 +6,7 @@ Authors@R:
            comment = c(ORCID = "0000-0003-2618-5296"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
-Imports: ggplot2, shiny, stats, shinythemes
+Imports: ggplot2, shiny, stats, shinythemes, networkD3 (>= 0.4)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

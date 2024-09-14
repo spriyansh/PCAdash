@@ -237,4 +237,57 @@ function(input, output, session) {
     cell_size = vis_params_contri_single$cell_size,
     cell_stroke = vis_params_contri_single$cell_stroke
   )
+
+
+  output$sankey_workflow <- networkD3::renderSankeyNetwork({
+    ## Nodes
+    analysis_flow_nodes <- data.frame(
+      name = c(
+        "Raw Counts",
+        "Normalized Counts",
+        "KEGG DB",
+        "Subset by GeneSet",
+        "Subset-Pathway-1", "Subset-Pathway-2", "Subset-Pathway-3", "Subset-Pathway-4", "Subset-Pathway-...", "Subset-Pathway-n",
+        "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var",
+        "Monocle3", "Inferred Pseudotime",
+        "Meagene-1", "Meagene-2", "Meagene-3", "Meagene-4", "Meagene-...", "Meagene-N"
+      ),
+      node = seq(0, 23)
+    )
+    analysis_flow_nodes$grp <- as.factor(rep("same_node", nrow(analysis_flow_nodes)))
+
+    ## Links
+    analysis_flow_Links <- data.frame(
+      source = c(0, 1, 2, rep(3, 6), seq(4, 9), 0, 16, rep(17, 6), seq(10, 15)),
+      target = c(1, 3, 3, 4, 5, 6, 7, 8, 9, seq(10, 15), 16, 17, seq(18, 23), seq(18, 23)),
+      value = c(20, 20, 20, rep(10, 6), rep(5, 6), 20, 20, rep(5, 6), rep(5, 6))
+    )
+    analysis_flow_Links$grp <- as.factor(rep("same_link", nrow(analysis_flow_Links)))
+
+    color <- "d3.scaleOrdinal(d3.schemeCategory20).domain(['same_node', 'same_link']).range(['#E69F00', '#009E73'])"
+    sankey <- sankeyNetwork(
+      Links = analysis_flow_Links,
+      Nodes = analysis_flow_nodes,
+      Source = "source",
+      Value = "value",
+      NodeGroup = "grp",
+      LinkGroup = "grp",
+      Target = "target",
+      NodeID = "name",
+      units = "TWh",
+      fontSize = 12,
+      nodeWidth = 30,
+      nodePadding = 60,
+      margin = 0,
+      colourScale = color
+    )
+
+    # Apply custom JavaScript for text color
+    htmlwidgets::onRender(sankey, '
+      function(el, x) {
+        d3.select(el).selectAll(".node text")
+          .style("fill", "white");
+      }
+    ')
+  })
 }
