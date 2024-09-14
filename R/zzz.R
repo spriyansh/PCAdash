@@ -8,15 +8,16 @@ dicrete_cell_color <- c("HSC" = "#56B4E9", "EMP" = "#F0E442", "Early Eryth" = "#
 #' @param activate A logical value indicating whether to activate the theme. Defaults to FALSE.
 #'
 #' @importFrom shinythemes shinytheme
+#' @import networkD3
 #'
 #' @export
 black_theme <- function(activate = FALSE) {
+  # Activate Selected plot
   if (activate) {
     axis_color <- "#FEF900"
   } else {
     axis_color <- "white"
   }
-
 
   theme(
     panel.border = element_blank(),
