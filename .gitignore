@@ -5,3 +5,4 @@
 PCAdash/dev
 deploy.R
 inst/app/rsconnect
+*.png
