@@ -1,12 +1,16 @@
 Package: PCAdash
-Title: What the Package Does (One Line, Title Case)
+Title: A shinyApp to visualize PCA-Metagenes
 Version: 0.0.1
 Authors@R: 
     person("Priyansh", "Srivastava", , "spriyansh29@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2618-5296"))
-Description: What the package does (one paragraph).
+Description: A ShinyApp structured within an R-Package to visualise the results
+    of PCA-Metagene pipeline.
 License: MIT + file LICENSE
-Imports: ggplot2, shiny, stats, shinythemes, networkD3 (>= 0.4)
+Imports: ggplot2 (>= 3.5.1), shiny (>= 1.9.1), stats (>= 4.3.0),
+    shinythemes (>= 1.2.0), networkD3 (>= 0.4)
+Depends: R (>= 4.0.0)
+Suggests: testthat (>= 3.2.1), shinytest2 (>= 0.3.2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

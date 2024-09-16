@@ -265,7 +265,7 @@ function(input, output, session) {
     analysis_flow_Links$grp <- as.factor(rep("same_link", nrow(analysis_flow_Links)))
 
     color <- "d3.scaleOrdinal(d3.schemeCategory20).domain(['same_node', 'same_link']).range(['#E69F00', '#009E73'])"
-    sankey <- sankeyNetwork(
+    sankey <- networkD3::sankeyNetwork(
       Links = analysis_flow_Links,
       Nodes = analysis_flow_nodes,
       Source = "source",
