@@ -9,6 +9,7 @@ dicrete_cell_color <- c("HSC" = "#56B4E9", "EMP" = "#F0E442", "Early Eryth" = "#
 #'
 #' @importFrom shinythemes shinytheme
 #' @import networkD3
+#' @importFrom networkD3 sankeyNetwork
 #'
 #' @export
 black_theme <- function(activate = FALSE) {

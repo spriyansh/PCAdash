@@ -1,6 +1,9 @@
 name: Deploy to ShinyAppsIO
 
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     branches:
       - main
