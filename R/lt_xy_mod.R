@@ -8,7 +8,7 @@
 #' @export
 lt_xy_ui <- function(id) {
   ns <- NS(id)
-  plotOutput(outputId = ns("lt_xy"))
+  highcharter::highchartOutput(outputId = ns("lt_xy"))
 }
 
 #' @title Longitudinal X-Y Plot Server Module
@@ -71,26 +71,115 @@ lt_xy_server <- function(id, x, y,
       })
 
       # Render a plot
-      output$lt_xy <- renderPlot({
-        p <- ggplot() +
-          geom_point(
-            data = df(), aes(x = x, y = y, color = .data$color_by),
-            alpha = cell_alpha(), size = cell_size(), stroke = cell_stroke()
-          ) +
-          ggtitle(main_title,
-            subtitle = sub_title
-          ) +
-          xlab(x_label) +
-          ylab(y_label) +
-          black_theme()
+      output$lt_xy <- renderHighchart({
+        # p <- ggplot() +
+        #   geom_point(
+        #     data = df(), aes(x = x, y = y, color = .data$color_by),
+        #     alpha = cell_alpha(), size = cell_size(), stroke = cell_stroke()
+        #   ) +
+        #   ggtitle(main_title,
+        #     subtitle = sub_title
+        #   ) +
+        #   xlab(x_label) +
+        #   ylab(y_label) +
+        #   black_theme()
+        #
+        # if (color_type == "discrete") {
+        #   p <- p + scale_color_manual(values = dicrete_cell_color)
+        # } else if (color_type == "contnious") {
+        #   p <- p + scale_color_viridis_c(option = "magma")
+        # }
+        #
+        # return(p)
 
-        if (color_type == "discrete") {
-          p <- p + scale_color_manual(values = dicrete_cell_color)
-        } else if (color_type == "contnious") {
-          p <- p + scale_color_viridis_c(option = "magma")
-        }
+        # Now use the color theme properly# Ensure cell_type is a factor and get the levels
+        cell_data_s3$cell_type <- as.factor(cell_data_s3$cell_type)
+        cell_types <- levels(cell_data_s3$cell_type)
 
-        return(p)
+        # Generate colors corresponding to the levels of cell_type
+        colors <- hcl.colors(length(cell_types), "Dark2")
+
+        # Create the highchart object without the color aesthetic
+        hcp <- hchart(cell_data_s3, type = "point", hcaes(
+          x = UMAP1, y = UMAP2,
+          group = cell_type
+        )) %>%
+          # Assign colors to the groups
+          hc_colors(colors) %>%
+          hc_add_series(
+            name = "Trajectory Graph",
+            data = node_df_s3,
+            type = "scatter",
+            showInLegend = FALSE,
+            hcaes(x = x, y = y),
+            marker = list(radius = 4)
+          ) %>%
+          hc_add_series_list(edge_list_s3) %>%
+          hc_title(text = "Trajectory UMAP", style = list(color = "white")) %>%
+          hc_xAxis(
+            title = list(
+              text = "UMAP1",
+              style = list(color = "white")
+            ),
+            lineColor = "white",
+            lineWidth = 2,
+            gridLineWidth = 0,
+            labels = list(style = list(color = "white"))
+          ) %>%
+          hc_yAxis(
+            title = list(
+              text = "UMAP2",
+              style = list(color = "white")
+            ),
+            lineColor = "white",
+            lineWidth = 2,
+            gridLineWidth = 0,
+            labels = list(style = list(color = "white"))
+          ) %>%
+          hc_tooltip(
+            useHTML = TRUE,
+            pointFormatter = JS("function() {
+                      return '<b>Pseudotime:</b> ' + this.pseudotime.toFixed(3) + '<br/>' +
+                             '<b>Cell ID:</b> ' + this.cell_id + '<br/>' +
+                             '<b>Cell Type ID:</b> ' + this.cell_type_id + '<br/>'}")
+          ) %>%
+          hc_legend(enabled = TRUE) %>%
+          hc_add_theme(
+            hc_theme(
+              line = list(
+                color = "white"
+              ),
+              chart = list(
+                backgroundColor = "#222222"
+              ),
+              # Remove colors from the theme to prevent overriding
+              # colors = colors,
+              title = list(
+                style = list(
+                  color = "white",
+                  fontFamily = "Times",
+                  fontSize = "25px"
+                )
+              ),
+              subtitle = list(
+                style = list(
+                  color = "white",
+                  fontFamily = "Times",
+                  fontSize = "15px"
+                )
+              ),
+              legend = list(
+                itemStyle = list(
+                  fontFamily = "Times",
+                  color = "white"
+                ),
+                itemHoverStyle = list(
+                  color = "yellow"
+                )
+              )
+            )
+          )
+        return(hcp)
       })
     }
   )

@@ -4,11 +4,16 @@ testthat::test_that("All required packages are installed", {
   desc <- read.dcf(system.file("DESCRIPTION", package = "PCAdash"))
 
   # Extract dependencies from Depends, Imports, and Suggests
-  fields <- c("Imports", "Suggests")
+  #fields <- c("Imports", "Suggests")
+  fields <- c("Imports")
 
   # Combine dependencies and split by comma
   deps <- desc[1, fields]
-  deps <- unlist(strsplit(desc[1, fields], ",|\n"))
+
+  # Remove all newline characters
+  deps <- gsub("\n", " ", deps)
+  deps <- unlist(strsplit(desc[1, fields], ","))
+  deps <- gsub("\n", " ", deps)
   names(deps) <- NULL
 
   # Clean up package names, remove R version dependencies

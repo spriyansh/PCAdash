@@ -9,6 +9,11 @@ data("metagene_results", package = "PCAdash")
 data("cell_type", package = "PCAdash")
 data("tsne_coords", package = "PCAdash")
 data("counts", package = "PCAdash")
+data("node_df_s3", package = "PCAdash")
+data("edge_list_s3", package = "PCAdash")
+data("cell_data_s3", package = "PCAdash")
+data("norm_counts_s3", package = "PCAdash")
+data("metagene_s3", package = "PCAdash")
 
 #
 # options(shiny.autoreload = TRUE)
@@ -16,7 +21,7 @@ data("counts", package = "PCAdash")
 #     appDir = "/home/priyansh/gitDockers/PCAdash/inst/app/",
 #     launch.browser = TRUE, display.mode = "normal"
 # )
-#
+
 # suppressPackageStartupMessages({
 #   library(ggplot2)
 # })

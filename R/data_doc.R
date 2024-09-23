@@ -64,3 +64,69 @@
 #' @author Priyansh Srivastava \email{spriyansh29@@gmail.com}
 #'
 "metagene_results"
+
+#' @title PCA Computations
+#'
+#' @description
+#' S3 of PCA Results Selected Metagenes for over 80% variance.
+#'
+#' @usage
+#' # Loading
+#' data("metagene_results", package = "PCAdash")
+#'
+#' @author Priyansh Srivastava \email{spriyansh29@@gmail.com}
+#'
+"metagene_s3"
+
+#' @title PCA Computations
+#'
+#' @description
+#' S3 of PCA Results Selected Metagenes for over 80% variance.
+#'
+#' @usage
+#' # Loading
+#' data("metagene_results", package = "PCAdash")
+#'
+#' @author Priyansh Srivastava \email{spriyansh29@@gmail.com}
+#'
+"norm_counts_s3"
+
+#' @title PCA Computations
+#'
+#' @description
+#' S3 of PCA Results Selected Metagenes for over 80% variance.
+#'
+#' @usage
+#' # Loading
+#' data("metagene_results", package = "PCAdash")
+#'
+#' @author Priyansh Srivastava \email{spriyansh29@@gmail.com}
+#'
+"cell_data_s3"
+
+
+#' @title PCA Computations
+#'
+#' @description
+#' S3 of PCA Results Selected Metagenes for over 80% variance.
+#'
+#' @usage
+#' # Loading
+#' data("metagene_results", package = "PCAdash")
+#'
+#' @author Priyansh Srivastava \email{spriyansh29@@gmail.com}
+#'
+"edge_list_s3"
+
+#' @title PCA Computations
+#'
+#' @description
+#' S3 of PCA Results Selected Metagenes for over 80% variance.
+#'
+#' @usage
+#' # Loading
+#' data("metagene_results", package = "PCAdash")
+#'
+#' @author Priyansh Srivastava \email{spriyansh29@@gmail.com}
+#'
+"node_df_s3"
