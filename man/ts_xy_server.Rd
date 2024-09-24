@@ -6,28 +6,20 @@
 \usage{
 ts_xy_server(
   id,
-  x,
-  y,
+  smoothed_data,
+  original_data,
   main_title = "Main Title",
   x_label = "x_lable",
   y_label = "y_lable",
-  sub_title = "Sub Title",
-  color_by = NULL,
-  trend_width = reactive(2),
-  x_breaks = reactive(5),
-  y_breaks = reactive(1),
-  cell_stroke = reactive(0.5),
-  cell_size = reactive(2),
-  cell_alpha = reactive(0.6)
+  sub_title = "Sub Title"
 )
 }
 \arguments{
-\item{id}{A unique identifier for the module, used to distinguish this module's
-UI and server components from others within a Shiny application.}
+\item{id}{A unique identifier for the module.}
 
-\item{x}{A numeric vector representing the x-axis data.}
+\item{smoothed_data}{A reactive expression that returns the smoothed data.}
 
-\item{y}{A numeric vector representing the y-axis data.}
+\item{original_data}{A reactive expression that returns the original data.}
 
 \item{main_title}{The main title of the plot.}
 
@@ -36,24 +28,7 @@ UI and server components from others within a Shiny application.}
 \item{y_label}{The label for the y-axis.}
 
 \item{sub_title}{An optional subtitle for the plot.}
-
-\item{color_by}{A factor or character vector for coloring the points by a category.}
-
-\item{trend_width}{The width of the trend line.}
-
-\item{x_breaks}{The interval for breaks on the x-axis.}
-
-\item{y_breaks}{The interval for breaks on the y-axis.}
-
-\item{cell_stroke}{The stroke width of the points.}
-
-\item{cell_size}{The size of the points.}
-
-\item{cell_alpha}{The transparency level of the points.}
 }
 \description{
-A Shiny server module that handles the rendering of a ggplot2-based X-Y plot.
-This module accepts x and y values as inputs and provides various customization
-options for rendering a detailed line plot with trend lines, titles, axis labels,
-and aesthetic customizations.
+A Shiny server module that handles the rendering of a ggplot2-based X-Y plot
 }

@@ -11,7 +11,7 @@ shiny::navbarPage(
     ))),
     fluidRow(column(8, offset = 2, h4("Workflow for Pathway Metagene Inference"))),
     fluidRow(
-      column(6, offset = 3, networkD3::sankeyNetworkOutput("sankey_workflow"))
+      column(6, offset = 3, highcharter::highchartOutput("sankey_workflow") %>% shinycssloaders::withSpinner())
     ),
     fluidRow(
       column(8, offset = 2, p("The workflow above illustrates the steps involved in inferring pathway activity over Pseudotime:"))
@@ -80,13 +80,13 @@ shiny::navbarPage(
         width = 9,
         shiny::fluidRow(
           shiny::column(4, var_bar_ui("variance_bar") %>% shinycssloaders::withSpinner()),
-          shiny::column(4, ts_xy_ui("metagene")),
+          shiny::column(4, ts_xy_ui("metagene") %>% shinycssloaders::withSpinner()),
           shiny::column(4, lt_xy_ui("latent_plot") %>% shinycssloaders::withSpinner()),
         ),
         hr(),
         shiny::fluidRow(
-          shiny::column(4, multi_ts_xy_ui("contri_genes")),
-          shiny::column(4, ts_xy_ui("contri_single")),
+          shiny::column(4, multi_ts_xy_ui("contri_genes") %>% shinycssloaders::withSpinner()),
+          shiny::column(4, ts_xy_ui("contri_single") %>% shinycssloaders::withSpinner()),
           shiny::column(4, var_bar_ui("polar_bar") %>% shinycssloaders::withSpinner())
         )
       )

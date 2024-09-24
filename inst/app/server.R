@@ -64,7 +64,6 @@ function(input, output, session) {
     showNotification(paste("Error Metagene data:", error$message), type = "error")
   })
 
-
   # Reactive value to store the cell data
   cell_data <- reactiveVal(NULL)
   node_data <- reactiveVal(NULL)
@@ -134,10 +133,57 @@ function(input, output, session) {
     )
   })
 
+  observeEvent(input$pathway_select, {
+    req(input$pathway_select)
+    # Load columns
+    col_names <- data.table::fread(
+      file = "www/data/metagene_matrix_s3.txt",
+      sep = "\t", header = FALSE, data.table = FALSE,
+      stringsAsFactors = TRUE,
+      nrows = 1
+    )
+    idx <- which(col_names == input$pathway_select)
 
-  observeEvent(input$gene_select, {
-    req(input$gene_select)
-    print(input$gene_select)
+    # Load metagene data
+    metagene_vals <- data.table::fread(
+      file = "www/data/metagene_matrix_s3.txt",
+      sep = "\t", header = TRUE, data.table = FALSE,
+      stringsAsFactors = FALSE,
+      select = idx
+    )
+    pseudotime <- data.table::fread(
+      file = "www/data/cell_data_s3.txt",
+      sep = "\t", header = TRUE, data.table = FALSE,
+      stringsAsFactors = TRUE,
+      select = 2
+    )
+
+    # Compute Smoother
+    metagene_ts <- data.frame(pseudotime = pseudotime[, 1], metagene = metagene_vals[, 1])
+    smoothed_data <- with(metagene_ts, smooth.spline(pseudotime, metagene, spar = 2))
+    smoothed_df <- data.frame(pseudotime = smoothed_data$x, metagene = smoothed_data$y)
+
+    smoothed_data <- smoothed_df %>%
+      dplyr::arrange(pseudotime) %>%
+      dplyr::mutate(x = pseudotime, y = metagene) %>%
+      dplyr::select(x, y)
+
+    # For original data
+    original_data <- metagene_ts %>%
+      dplyr::arrange(pseudotime) %>%
+      dplyr::mutate(x = pseudotime, y = metagene) %>%
+      dplyr::select(x, y)
+
+
+    ts_xy_server(
+      id = "metagene",
+      smoothed_data = reactive(smoothed_data),
+      original_data = reactive(original_data),
+      main_title = "Metagene Over Pseudotime",
+      sub_title = NULL,
+      x_label = "Monocle3 Pseudotime",
+      y_label = "Metagene Trend"
+    )
   })
 
   observeEvent(list(input$pathway_select, pc_info()), {
@@ -158,6 +204,60 @@ function(input, output, session) {
       sub_title = NULL
     )
   })
+
+  observeEvent(input$gene_select, {
+    req(input$gene_select)
+
+    # Load columns
+    col_names <- data.table::fread(
+      file = "www/data/norm_counts_s3.txt",
+      sep = "\t", header = FALSE, data.table = FALSE,
+      stringsAsFactors = TRUE,
+      nrows = 1
+    )
+    idx <- which(col_names == input$gene_select)
+
+    # Load metagene data
+    count_vals <- data.table::fread(
+      file = "www/data/norm_counts_s3.txt",
+      sep = "\t", header = TRUE, data.table = FALSE,
+      stringsAsFactors = FALSE,
+      select = idx
+    )
+    pseudotime <- data.table::fread(
+      file = "www/data/cell_data_s3.txt",
+      sep = "\t", header = TRUE, data.table = FALSE,
+      stringsAsFactors = TRUE,
+      select = 2
+    )
+
+    # Compute Smoother
+    count_ts <- data.frame(pseudotime = pseudotime[, 1], count = count_vals[, 1])
+    smoothed_data <- with(count_ts, smooth.spline(pseudotime, count, spar = 2))
+    smoothed_df <- data.frame(pseudotime = smoothed_data$x, count = smoothed_data$y)
+
+    smoothed_data <- smoothed_df %>%
+      dplyr::arrange(pseudotime) %>%
+      dplyr::mutate(x = pseudotime, y = count) %>%
+      dplyr::select(x, y)
+
+    # For original data
+    original_data <- count_ts %>%
+      dplyr::arrange(pseudotime) %>%
+      dplyr::mutate(x = pseudotime, y = count) %>%
+      dplyr::select(x, y)
+
+    ts_xy_server(
+      id = "contri_single",
+      smoothed_data = reactive(smoothed_data),
+      original_data = reactive(original_data),
+      main_title = "Metagene Over Pseudotime",
+      sub_title = NULL,
+      x_label = "Monocle3 Pseudotime",
+      y_label = "Metagene Trend"
+    )
+  })
+
 
   pTime <- seq(1, 10, 1)
   vis_params_metagene <- vis_params_server("vis_params_metagene",
@@ -230,23 +330,7 @@ function(input, output, session) {
   })
 
 
-  ts_xy_server(
-    id = "metagene",
-    x = pTime,
-    y = reactive({
-      req(metagene_id())
-      as.numeric(metagene_results[[as.character(metagene_id())]]$PC)
-    }),
-    main_title = "Metagene Over Pseudotime",
-    color_by = "cell_type",
-    sub_title = NULL,
-    x_label = "Monocle3 Pseudotime",
-    y_label = "Metagene Trend",
-    cell_alpha = vis_params_metagene$cell_alpha,
-    cell_size = vis_params_metagene$cell_size,
-    cell_stroke = vis_params_metagene$cell_stroke,
-    trend_width = vis_params_metagene$trend_width
-  )
+
 
   # var_bar_server(
   #   id = "variance_bar",
@@ -318,75 +402,77 @@ function(input, output, session) {
     trend_alpha = vis_params_contri$trend_alpha
   )
 
-  ts_xy_server(
-    id = "contri_single",
-    x = pTime,
-    y = reactive({
-      req(metagene_id())
-      req(input$gene_select)
-      return(log1p(counts[input$gene_select, , drop = TRUE]))
-    }),
-    sub_title = NULL,
-    color_by = cell_type,
-    main_title = "Expression Pattern Over Pseudotime",
-    y_label = "log1p(Expression)",
-    x_label = "Monocle3 Pseudotime",
-    trend_width = vis_params_contri_single$trend_width,
-    cell_alpha = vis_params_contri_single$cell_alpha,
-    cell_size = vis_params_contri_single$cell_size,
-    cell_stroke = vis_params_contri_single$cell_stroke
-  )
+  # ts_xy_server(
+  #   id = "contri_single",
+  #   x = pTime,
+  #   y = reactive({
+  #     req(metagene_id())
+  #     req(input$gene_select)
+  #     return(log1p(counts[input$gene_select, , drop = TRUE]))
+  #   }),
+  #   sub_title = NULL,
+  #   color_by = cell_type,
+  #   main_title = "Expression Pattern Over Pseudotime",
+  #   y_label = "log1p(Expression)",
+  #   x_label = "Monocle3 Pseudotime",
+  #   trend_width = vis_params_contri_single$trend_width,
+  #   cell_alpha = vis_params_contri_single$cell_alpha,
+  #   cell_size = vis_params_contri_single$cell_size,
+  #   cell_stroke = vis_params_contri_single$cell_stroke
+  # )
 
 
-  output$sankey_workflow <- networkD3::renderSankeyNetwork({
-    ## Nodes
+  output$sankey_workflow <- highcharter::renderHighchart({
+    # Load necessary library
+    library(highcharter)
+
+    # Create analysis_flow_nodes data frame
     analysis_flow_nodes <- data.frame(
       name = c(
-        "Raw Counts",
-        "Normalized Counts",
-        "KEGG DB",
-        "Subset by GeneSet",
-        "Subset-Pathway-1", "Subset-Pathway-2", "Subset-Pathway-3", "Subset-Pathway-4", "Subset-Pathway-...", "Subset-Pathway-n",
-        "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var",
-        "Monocle3", "Inferred Pseudotime",
-        "Meagene-1", "Meagene-2", "Meagene-3", "Meagene-4", "Meagene-...", "Meagene-N"
+        "Raw Counts", "Normalized Counts", "KEGG DB", "Subset by GeneSet", "Subset-Pathway-1",
+        "Subset-Pathway-2", "Subset-Pathway-3", "Subset-Pathway-4", "Subset-Pathway-...",
+        "Subset-Pathway-n", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var",
+        "PC-Max-Var", "Monocle3", "Inferred Pseudotime", "Meagene-1", "Meagene-2", "Meagene-3",
+        "Meagene-4", "Meagene-...", "Meagene-N"
       ),
-      node = seq(0, 23)
+      node = 0:23,
+      grp = rep("same_node", 24),
+      stringsAsFactors = FALSE
     )
-    analysis_flow_nodes$grp <- as.factor(rep("same_node", nrow(analysis_flow_nodes)))
 
-    ## Links
+    # Create analysis_flow_Links data frame
     analysis_flow_Links <- data.frame(
-      source = c(0, 1, 2, rep(3, 6), seq(4, 9), 0, 16, rep(17, 6), seq(10, 15)),
-      target = c(1, 3, 3, 4, 5, 6, 7, 8, 9, seq(10, 15), 16, 17, seq(18, 23), seq(18, 23)),
-      value = c(20, 20, 20, rep(10, 6), rep(5, 6), 20, 20, rep(5, 6), rep(5, 6))
-    )
-    analysis_flow_Links$grp <- as.factor(rep("same_link", nrow(analysis_flow_Links)))
-
-    color <- "d3.scaleOrdinal(d3.schemeCategory20).domain(['same_node', 'same_link']).range(['#E69F00', '#009E73'])"
-    sankey <- networkD3::sankeyNetwork(
-      Links = analysis_flow_Links,
-      Nodes = analysis_flow_nodes,
-      Source = "source",
-      Value = "value",
-      NodeGroup = "grp",
-      LinkGroup = "grp",
-      Target = "target",
-      NodeID = "name",
-      units = "TWh",
-      fontSize = 12,
-      nodeWidth = 30,
-      nodePadding = 60,
-      margin = 0,
-      colourScale = color
+      source = c(0, 1, 2, 3, 3, 3, 3, 3, 3, 4, 5, 6, 7, 8, 9, 0, 16, 17, 17, 17, 17, 17, 17, 10, 11, 12, 13, 14, 15),
+      target = c(1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 18, 19, 20, 21, 22, 23),
+      value = c(20, 20, 20, 10, 10, 10, 10, 10, 10, 5, 5, 5, 5, 5, 5, 20, 20, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
+      grp = rep("same_link", 29),
+      stringsAsFactors = FALSE
     )
 
-    # Apply custom JavaScript for text color
-    htmlwidgets::onRender(sankey, '
-      function(el, x) {
-        d3.select(el).selectAll(".node text")
-          .style("fill", "white");
-      }
-    ')
+    # Map node IDs to node names
+    node_names <- analysis_flow_nodes$name
+    names(node_names) <- as.character(analysis_flow_nodes$node)
+
+    # Prepare data for Sankey diagram
+    sankey_links <- data.frame(
+      from = node_names[as.character(analysis_flow_Links$source)],
+      to = node_names[as.character(analysis_flow_Links$target)],
+      weight = analysis_flow_Links$value,
+      stringsAsFactors = FALSE
+    )
+
+    # Convert data frame to list for highcharter
+    sankey_data <- list_parse(sankey_links)
+
+    # Create the Sankey diagram
+    highchart() %>%
+      hc_chart(type = "sankey") %>%
+      hc_add_series(
+        data = sankey_data,
+        dataLabels = list(
+          enabled = TRUE
+        )
+      ) %>%
+      hc_title(text = "Analysis Flow Sankey Diagram")
   })
 }

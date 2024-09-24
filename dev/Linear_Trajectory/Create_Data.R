@@ -194,6 +194,7 @@ cell_data_s3$cell_type <- as.factor(cell_data_s3$cell_type)
 cell_data_s3$cell_type_id <- as.factor(cell_data_s3$cell_type_id)
 
 ## Export Cell Metadata
+cell_data_s3 <- cell_data_s3[order(cell_data_s3$pseudotime), ]
 write.table(cell_data_s3,
   file = "inst/app/www/data/cell_data_s3.txt",
   sep = "\t", row.names = FALSE, quote = FALSE
@@ -216,6 +217,10 @@ norm_counts_s3 <- as.data.frame(t(norm_counts_s3))
 colnames(norm_counts_s3) <- norm_counts_s3[1, ]
 norm_counts_s3 <- norm_counts_s3[-1, ]
 norm_counts_s3 <- norm_counts_s3 %>% rownames_to_column(var = "cell_id")
+
+## Order cell by pseudotime
+rownames(norm_counts_s3) <- norm_counts_s3$cell_id
+norm_counts_s3 <- norm_counts_s3[cell_data_s3$cell_id, ]
 write.table(norm_counts_s3,
   file = "inst/app/www/data/norm_counts_s3.txt",
   sep = "\t", row.names = FALSE, quote = FALSE
@@ -274,6 +279,8 @@ metagene_matrix <- as.data.frame(do.call(cbind, metagene_info))
 
 ## Export Metagene Matrix
 metagene_matrix <- metagene_matrix %>% rownames_to_column(var = "cell_id")
+rownames(metagene_matrix) <- metagene_matrix$cell_id
+metagene_matrix <- metagene_matrix[cell_data_s3$cell_id, ]
 
 write.table(metagene_matrix,
   file = "inst/app/www/data/metagene_matrix_s3.txt",
