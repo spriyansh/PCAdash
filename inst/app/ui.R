@@ -26,6 +26,7 @@ shiny::navbarPage(
   <li>The inferred pseudotime from Monocle3, after trajectory inference, is transferred to the metagenes.</li>
   <li>This allows for the visualization of metagene behavior in pseudotime, helping to infer how pathway behavior is coordinated during changes in cell states.</li>
 </ul>"))),
+    fluidRow(shiny::column(4, offset = 4, lt_xy_ui("latent_plot") %>% shinycssloaders::withSpinner())),
     hr(), # Footer
     tags$footer(
       style = "background-color: #222222; color: white; padding: 10px; position: relative; bottom: 0; width: 100%;",
@@ -79,15 +80,13 @@ shiny::navbarPage(
       shiny::mainPanel(
         width = 9,
         shiny::fluidRow(
-          shiny::column(4, var_bar_ui("variance_bar") %>% shinycssloaders::withSpinner()),
-          shiny::column(4, ts_xy_ui("metagene") %>% shinycssloaders::withSpinner()),
-          shiny::column(4, lt_xy_ui("latent_plot") %>% shinycssloaders::withSpinner()),
+          shiny::column(6, var_bar_ui("variance_bar") %>% shinycssloaders::withSpinner()),
+          shiny::column(6, ts_xy_ui("metagene") %>% shinycssloaders::withSpinner()),
         ),
         hr(),
         shiny::fluidRow(
-          shiny::column(4, multi_ts_xy_ui("contri_genes") %>% shinycssloaders::withSpinner()),
-          shiny::column(4, ts_xy_ui("contri_single") %>% shinycssloaders::withSpinner()),
-          shiny::column(4, var_bar_ui("polar_bar") %>% shinycssloaders::withSpinner())
+          shiny::column(6, offset = 0, ts_xy_ui("contri_single") %>% shinycssloaders::withSpinner()),
+          shiny::column(6, offset = 0, var_bar_ui("polar_bar") %>% shinycssloaders::withSpinner())
         )
       )
     ),
