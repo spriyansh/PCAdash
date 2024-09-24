@@ -116,7 +116,24 @@ function(input, output, session) {
       selected = tmp[1]
     )
     gene_list(tmp)
+
+    loading_info <- gene_level_info()[gene_level_info()$path_id == input$pathway_select, c("gene", "loading"), drop = FALSE]
+
+    # print(loading_info)
+    var_bar_server(
+      id = "polar_bar",
+      df = reactive(loading_info),
+      x_col = "gene",
+      sd_col = "sd",
+      y_col = "loading",
+      main_title = "Loading to Metagenes",
+      x_label = "Gene Ids",
+      y_label = "Loadings",
+      sub_title = NULL,
+      type = "bar"
+    )
   })
+
 
   observeEvent(input$gene_select, {
     req(input$gene_select)
@@ -127,9 +144,19 @@ function(input, output, session) {
     req(input$pathway_select, pc_info())
 
     # Get subset
-    print(input$pathway_select)
-    pc_info <- pc_info()[pc_info()$path_id == input$pathway_select, c("pc", "variance_explained", "sd"), drop = FALSE]
-    print(pc_info)
+    filtered_pc_info <- pc_info()[pc_info()$path_id == input$pathway_select, c("pc", "variance_explained", "sd"), drop = FALSE]
+
+    var_bar_server(
+      id = "variance_bar",
+      df = reactive(filtered_pc_info),
+      y_col = "variance_explained",
+      sd_col = "sd",
+      x_col = "pc",
+      main_title = "Variance Explained Per PC",
+      x_label = "Principal Components",
+      y_label = "Variance Explained (%)",
+      sub_title = NULL
+    )
   })
 
   pTime <- seq(1, 10, 1)
@@ -164,6 +191,7 @@ function(input, output, session) {
       length(metagene_results[[metagene_id()]]$variance_per_pc)
     )
   )
+
 
   observeEvent(input$plot_select, {
     if (input$plot_select == "metagene") {
@@ -220,53 +248,53 @@ function(input, output, session) {
     trend_width = vis_params_metagene$trend_width
   )
 
-  var_bar_server(
-    id = "variance_bar",
-    var_per_pc = reactive({
-      req(metagene_id())
-      metagene_results[[metagene_id()]][["variance_per_pc"]]
-    }),
-    sd = reactive({
-      req(metagene_id())
-      sqrt(metagene_results[[metagene_id()]][["variance_per_pc"]])
-    }),
-    main_title = "Variance Explained Per PC",
-    sub_title = NULL,
-    x_label = "Principal Components",
-    y_label = "Variance Explained (%)",
-    bin_width = vis_params_metagene$bar_width,
-    bar_alpha = vis_params_metagene$bar_alpha,
-    n_bar = vis_params_metagene$n_pcs,
-    activate_legend = reactive({
-      FALSE
-    })
-  )
+  # var_bar_server(
+  #   id = "variance_bar",
+  #   var_per_pc = reactive({
+  #     req(metagene_id())
+  #     metagene_results[[metagene_id()]][["variance_per_pc"]]
+  #   }),
+  #   sd = reactive({
+  #     req(metagene_id())
+  #     sqrt(metagene_results[[metagene_id()]][["variance_per_pc"]])
+  #   }),
+  #   main_title = "Variance Explained Per PC",
+  #   sub_title = NULL,
+  #   x_label = "Principal Components",
+  #   y_label = "Variance Explained (%)",
+  #   bin_width = vis_params_metagene$bar_width,
+  #   bar_alpha = vis_params_metagene$bar_alpha,
+  #   n_bar = vis_params_metagene$n_pcs,
+  #   activate_legend = reactive({
+  #     FALSE
+  #   })
+  # )
 
-  var_bar_server(
-    id = "polar_bar",
-    var_per_pc = reactive({
-      req(metagene_id())
-      loading_vector <- metagene_results[[metagene_id()]][["loadings"]]
-      loading_vector <- loading_vector[, 1, drop = TRUE]
-      names(loading_vector) <- rownames(metagene_results[[metagene_id()]][["loadings"]])
-      return(loading_vector)
-    }),
-    sd = reactive({
-      req(metagene_id())
-      sqrt(metagene_results[[metagene_id()]][["variance_per_pc"]])
-    }),
-    main_title = "Loadings for Metagene",
-    sub_title = NULL,
-    x_label = "Principal Component",
-    y_label = "Variance Explained (%)",
-    bin_width = vis_params_polar$bar_width,
-    bar_alpha = vis_params_polar$bar_alpha,
-    polar_cord = TRUE,
-    n_bar = vis_params_polar$n_pcs,
-    activate_legend = reactive({
-      FALSE
-    })
-  )
+  # var_bar_server(
+  #   id = "polar_bar",
+  #   var_per_pc = reactive({
+  #     req(metagene_id())
+  #     loading_vector <- metagene_results[[metagene_id()]][["loadings"]]
+  #     loading_vector <- loading_vector[, 1, drop = TRUE]
+  #     names(loading_vector) <- rownames(metagene_results[[metagene_id()]][["loadings"]])
+  #     return(loading_vector)
+  #   }),
+  #   sd = reactive({
+  #     req(metagene_id())
+  #     sqrt(metagene_results[[metagene_id()]][["variance_per_pc"]])
+  #   }),
+  #   main_title = "Loadings for Metagene",
+  #   sub_title = NULL,
+  #   x_label = "Principal Component",
+  #   y_label = "Variance Explained (%)",
+  #   bin_width = vis_params_polar$bar_width,
+  #   bar_alpha = vis_params_polar$bar_alpha,
+  #   polar_cord = TRUE,
+  #   n_bar = vis_params_polar$n_pcs,
+  #   activate_legend = reactive({
+  #     FALSE
+  #   })
+  # )
 
   multi_ts_xy_server(
     id = "contri_genes",

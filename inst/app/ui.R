@@ -79,7 +79,7 @@ shiny::navbarPage(
       shiny::mainPanel(
         width = 9,
         shiny::fluidRow(
-          shiny::column(4, var_bar_ui("variance_bar")),
+          shiny::column(4, var_bar_ui("variance_bar") %>% shinycssloaders::withSpinner()),
           shiny::column(4, ts_xy_ui("metagene")),
           shiny::column(4, lt_xy_ui("latent_plot") %>% shinycssloaders::withSpinner()),
         ),
@@ -87,7 +87,7 @@ shiny::navbarPage(
         shiny::fluidRow(
           shiny::column(4, multi_ts_xy_ui("contri_genes")),
           shiny::column(4, ts_xy_ui("contri_single")),
-          shiny::column(4, var_bar_ui("polar_bar"))
+          shiny::column(4, var_bar_ui("polar_bar") %>% shinycssloaders::withSpinner())
         )
       )
     ),

@@ -6,30 +6,28 @@
 \usage{
 var_bar_server(
   id,
-  var_per_pc,
-  sd,
-  n_bar = reactive(5),
+  df,
+  x_col,
+  y_col,
+  sd_col = NULL,
   main_title,
   x_label = NULL,
   y_label = NULL,
   sub_title = NULL,
-  bin_width = reactive(0.5),
-  bar_alpha = reactive(0.7),
-  polar_cord = FALSE,
-  activate_legend = reactive(FALSE)
+  type = "column"
 )
 }
 \arguments{
 \item{id}{A unique identifier for the module, used to distinguish this module's
 UI and server components from others within a Shiny application.}
 
-\item{var_per_pc}{A numeric vector representing the variance explained by each
-principal component (PC).}
+\item{df}{A reactive expression that returns a data frame containing the data to be plotted.}
 
-\item{sd}{A numeric vector representing the standard deviation associated with
-each principal component's variance.}
+\item{x_col}{The column name for the x-axis.}
 
-\item{n_bar}{The number of bars to display in the plot. Defaults to 5.}
+\item{y_col}{The column name for the y-axis.}
+
+\item{sd_col}{The column name for the standard deviation values.}
 
 \item{main_title}{The main title of the plot.}
 
@@ -39,16 +37,8 @@ each principal component's variance.}
 
 \item{sub_title}{An optional subtitle for the plot. Defaults to NULL.}
 
-\item{bin_width}{The width of the bars in the plot. Defaults to 0.5.}
-
-\item{bar_alpha}{The transparency level of the bars. Defaults to 0.7.}
-
-\item{polar_cord}{A logical value indicating whether to use polar coordinates for the plot. Defaults to FALSE.}
-
-\item{activate_legend}{A logical value indicating whether to activate the legend. Defaults to FALSE.}
+\item{type}{The type of plot to render. Defaults to "column".}
 }
 \description{
-A Shiny server module that renders a ggplot2-based bar plot representing the variance
-explained by each principal component (PC). This module supports customization options
-for titles, axis labels, and aesthetics such as bar width and transparency.
+Variance Bar Plot Server Module
 }

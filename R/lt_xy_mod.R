@@ -47,8 +47,6 @@ lt_xy_server <- function(id,
   moduleServer(
     id = id,
     module = function(input, output, session) {
-      dicrete_cell_color <- "dicrete_cell_color"
-
       ## Extract Cell Types
       cell_types <- levels(df()[[grp_col]])
 
@@ -68,7 +66,7 @@ lt_xy_server <- function(id,
                 radius = 5,
                 symbol = "circle"
               ),
-              opacity = 0.7
+              opacity = 0.9
             )
           ) %>%
           # Assign colors to the groups
