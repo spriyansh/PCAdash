@@ -14,111 +14,79 @@ lt_xy_ui <- function(id) {
 #' @title Longitudinal X-Y Plot Server Module
 #'
 #' @description
-#' A Shiny server module that renders a ggplot2-based scatter plot to visualize
-#' longitudinal data over time, with options for continuous or discrete color scaling.
-#' This module supports customization of plot aesthetics such as point size, stroke,
-#' and transparency, along with titles and axis labels.
+#' A Shiny server module that renders a ggplot2-based scatter plot.
 #'
-#' @param id A unique identifier for the module, used to distinguish this module's
-#' UI and server components from others within a Shiny application.
-#' @param x A numeric vector representing the x-axis data.
-#' @param y A numeric vector representing the y-axis data.
-#' @param pTime A numeric or datetime vector representing the progression or time data,
-#' used for color mapping when \code{color_type} is set to "continuous".
+#' @param id A unique identifier for the module.
+#' @param df A reactive expression that returns a data frame containing the data to be plotted.
+#' @param x_col The column name for the x-axis.
+#' @param y_col The column name for the y-axis.
+#' @param grp_col The column name for the grouping variable.
+#' @param node_df A reactive expression that returns a data frame containing the node data.
+#' @param node_x_col The column name for the x-axis of the node data.
+#' @param node_y_col The column name for the y-axis of the node data.
+#' @param edge_list A reactive expression that returns a list of edge data.
 #' @param main_title The main title of the plot.
 #' @param x_label The label for the x-axis. Defaults to NULL.
 #' @param y_label The label for the y-axis. Defaults to NULL.
 #' @param sub_title An optional subtitle for the plot. Defaults to NULL.
-#' @param catgeory A factor or character vector used for color mapping when \code{color_type}
-#' is set to "discrete". Defaults to NULL.
-#' @param cell_stroke The stroke width of the points. Defaults to 0.5.
-#' @param cell_size The size of the points. Defaults to 2.
-#' @param cell_alpha The transparency level of the points. Defaults to 0.6.
-#' @param color_type A string specifying the type of color mapping. Options are "continuous"
-#' (default) for mapping \code{pTime} to colors, or "discrete" for mapping \code{catgeory} to colors.
 #'
 #' @export
-lt_xy_server <- function(id, x, y,
-                         pTime,
-                         main_title,
-                         x_label = NULL,
-                         y_label = NULL,
-                         sub_title = NULL,
-                         catgeory = NULL,
-                         cell_stroke = reactive(0.5),
-                         cell_size = reactive(2),
-                         cell_alpha = reactive(0.6),
-                         color_type = "contnious") {
+lt_xy_server <- function(id,
+                         df,
+                         x_col,
+                         y_col,
+                         grp_col,
+                         node_df,
+                         node_x_col,
+                         node_y_col,
+                         edge_list,
+                         main_title = "Trajectory UMAP",
+                         x_label = "UMAP-1",
+                         y_label = "UMAP-2",
+                         sub_title = NULL) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
       dicrete_cell_color <- "dicrete_cell_color"
-      df <- reactive({
-        df <- data.frame(
-          x = x,
-          y = y,
-          catgeory = catgeory,
-          pTime = pTime
-        )
 
-        if (color_type == "discrete") {
-          df[["color_by"]] <- df[["catgeory"]]
-        } else if (color_type == "contnious") {
-          df[["color_by"]] <- df[["pTime"]]
-        }
+      ## Extract Cell Types
+      cell_types <- levels(df()[[grp_col]])
 
-        return(df)
-      })
+      # Generate colors corresponding to the levels of cell_type
+      colors <- hcl.colors(length(cell_types), "Dark2")
 
       # Render a plot
-      output$lt_xy <- renderHighchart({
-        # p <- ggplot() +
-        #   geom_point(
-        #     data = df(), aes(x = x, y = y, color = .data$color_by),
-        #     alpha = cell_alpha(), size = cell_size(), stroke = cell_stroke()
-        #   ) +
-        #   ggtitle(main_title,
-        #     subtitle = sub_title
-        #   ) +
-        #   xlab(x_label) +
-        #   ylab(y_label) +
-        #   black_theme()
-        #
-        # if (color_type == "discrete") {
-        #   p <- p + scale_color_manual(values = dicrete_cell_color)
-        # } else if (color_type == "contnious") {
-        #   p <- p + scale_color_viridis_c(option = "magma")
-        # }
-        #
-        # return(p)
-
-        # Now use the color theme properly# Ensure cell_type is a factor and get the levels
-        cell_data_s3$cell_type <- as.factor(cell_data_s3$cell_type)
-        cell_types <- levels(cell_data_s3$cell_type)
-
-        # Generate colors corresponding to the levels of cell_type
-        colors <- hcl.colors(length(cell_types), "Dark2")
-
+      output$lt_xy <- highcharter::renderHighchart({
         # Create the highchart object without the color aesthetic
-        hcp <- hchart(cell_data_s3, type = "point", hcaes(
-          x = UMAP1, y = UMAP2,
-          group = cell_type
+        highcharter::hchart(df(), type = "point", highcharter::hcaes(
+          x = .data[[x_col]], y = .data[[y_col]],
+          group = .data[[grp_col]]
         )) %>%
+          highcharter::hc_plotOptions(
+            scatter = list(
+              marker = list(
+                radius = 5,
+                symbol = "circle"
+              ),
+              opacity = 0.7
+            )
+          ) %>%
           # Assign colors to the groups
-          hc_colors(colors) %>%
-          hc_add_series(
+          highcharter::hc_colors(colors) %>%
+          highcharter::hc_add_series(
             name = "Trajectory Graph",
-            data = node_df_s3,
+            data = node_df(),
             type = "scatter",
             showInLegend = FALSE,
-            hcaes(x = x, y = y),
+            highcharter::hcaes(x = .data[[node_x_col]], y = .data[[node_y_col]]),
             marker = list(radius = 4)
           ) %>%
-          hc_add_series_list(edge_list_s3) %>%
-          hc_title(text = "Trajectory UMAP", style = list(color = "white")) %>%
-          hc_xAxis(
+          highcharter::hc_add_series_list(edge_list()) %>%
+          highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
+          highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
+          highcharter::hc_xAxis(
             title = list(
-              text = "UMAP1",
+              text = x_label,
               style = list(color = "white")
             ),
             lineColor = "white",
@@ -126,9 +94,9 @@ lt_xy_server <- function(id, x, y,
             gridLineWidth = 0,
             labels = list(style = list(color = "white"))
           ) %>%
-          hc_yAxis(
+          highcharter::hc_yAxis(
             title = list(
-              text = "UMAP2",
+              text = y_label,
               style = list(color = "white")
             ),
             lineColor = "white",
@@ -136,16 +104,15 @@ lt_xy_server <- function(id, x, y,
             gridLineWidth = 0,
             labels = list(style = list(color = "white"))
           ) %>%
-          hc_tooltip(
+          highcharter::hc_tooltip(
             useHTML = TRUE,
-            pointFormatter = JS("function() {
-                      return '<b>Pseudotime:</b> ' + this.pseudotime.toFixed(3) + '<br/>' +
-                             '<b>Cell ID:</b> ' + this.cell_id + '<br/>' +
+            pointFormatter = highcharter::JS("function() {
+                      return '<b>Cell ID:</b> ' + this.cell_id + '<br/>' +
                              '<b>Cell Type ID:</b> ' + this.cell_type_id + '<br/>'}")
           ) %>%
-          hc_legend(enabled = TRUE) %>%
-          hc_add_theme(
-            hc_theme(
+          highcharter::hc_legend(enabled = TRUE) %>%
+          highcharter::hc_add_theme(
+            highcharter::hc_theme(
               line = list(
                 color = "white"
               ),
@@ -179,7 +146,6 @@ lt_xy_server <- function(id, x, y,
               )
             )
           )
-        return(hcp)
       })
     }
   )

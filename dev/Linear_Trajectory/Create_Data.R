@@ -2,6 +2,9 @@
 suppressPackageStartupMessages({
   library(monocle3)
   library(pbmcapply)
+  library(scuttle)
+  library(dplyr)
+  library(igraph)
 })
 
 ## Load cds
@@ -72,9 +75,9 @@ local_result_list_kegg <- pbmcapply::pbmclapply(c(1:nrow(gmt)), function(i,
   path_id <- row_i$PathwayID
   path_name <- row_i$PathwayName
   rm(row_i)
-  if (length(pool) >= 5) {
+  if (length(pool) >= 10) {
     sub_x <- as.matrix(global_counts[, colnames(global_counts) %in% pool, drop = FALSE])
-    if (ncol(sub_x) >= 5) {
+    if (ncol(sub_x) >= 10) {
       if (all(colSums(sub_x) > 0)) {
         ## Compute PCA
         tryCatch(
@@ -82,7 +85,7 @@ local_result_list_kegg <- pbmcapply::pbmclapply(c(1:nrow(gmt)), function(i,
             pca_local <- prcomp(sub_x,
               scale = FALSE,
               center = TRUE,
-              rank. = 3
+              rank. = 10
             )
             variance_explained <- (pca_local$sdev)^2 / sum((pca_local$sdev)^2) * 100
             n_genes <- ncol(sub_x)
@@ -130,8 +133,8 @@ length(metagene_detected_40)
 
 ## Extract Cell-Vertex df
 g <- principal_graph(cds)$UMAP
-vertex_df <- as_data_frame(g, what = "vertices")
-edge_df <- as_data_frame(g, what = "edges")
+vertex_df <- igraph::as_data_frame(g, what = "vertices")
+edge_df <- igraph::as_data_frame(g, what = "edges")
 close_cells <- data.frame(
   cell_id = rownames(cds@principal_graph_aux@listData$UMAP$pr_graph_cell_proj_closest_vertex),
   vertex_id = paste("Y", cds@principal_graph_aux@listData$UMAP$pr_graph_cell_proj_closest_vertex, sep = "_")
@@ -156,11 +159,11 @@ colnames(edge_df) <- c("from", "to", "weight", "from_x", "from_y", "to_x", "to_y
 # De duplicate
 edge_df <- edge_df[!duplicated(edge_df), ]
 # Create a list of series for each edge
-edges_list <- lapply(1:nrow(edges_df), function(i) {
+edges_list <- lapply(1:nrow(edge_df), function(i) {
   list(
     data = list(
-      list(x = edges_df$from_x[i], y = edges_df$from_y[i]),
-      list(x = edges_df$to_x[i], y = edges_df$to_y[i])
+      list(x = edge_df$from_x[i], y = edge_df$from_y[i]),
+      list(x = edge_df$to_x[i], y = edge_df$to_y[i])
     ),
     type = "line",
     color = "white",
@@ -173,8 +176,8 @@ edges_list <- lapply(1:nrow(edges_df), function(i) {
 
 # Prepare nodes data for plotting points
 nodes_df <- data.frame(
-  x = c(edges_df$from_x, edges_df$to_x),
-  y = c(edges_df$from_y, edges_df$to_y)
+  x = c(edge_df$from_x, edge_df$to_x),
+  y = c(edge_df$from_y, edge_df$to_y)
 )
 
 # Remove duplicate nodes if necessary
@@ -187,10 +190,96 @@ edge_list_s3 <- edges_list
 node_df_s3 <- nodes_df
 norm_counts_s3 <- norm_counts
 
+cell_data_s3$cell_type <- as.factor(cell_data_s3$cell_type)
+cell_data_s3$cell_type_id <- as.factor(cell_data_s3$cell_type_id)
+
+## Export Cell Metadata
+write.table(cell_data_s3,
+  file = "inst/app/www/data/cell_data_s3.txt",
+  sep = "\t", row.names = FALSE, quote = FALSE
+)
+
+## Export Node information
+write.table(node_df_s3,
+  file = "inst/app/www/data/node_df_s3.txt",
+  sep = "\t", row.names = FALSE, quote = FALSE
+)
+
+## Export Edge List information
+saveRDS(edge_list_s3, file = "inst/app/www/data/edge_list_s3.RDS")
+
+## Export Norm Counts
+norm_counts_s3 <- norm_counts_s3 %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "gene")
+norm_counts_s3 <- as.data.frame(t(norm_counts_s3))
+colnames(norm_counts_s3) <- norm_counts_s3[1, ]
+norm_counts_s3 <- norm_counts_s3[-1, ]
+norm_counts_s3 <- norm_counts_s3 %>% rownames_to_column(var = "cell_id")
+write.table(norm_counts_s3,
+  file = "inst/app/www/data/norm_counts_s3.txt",
+  sep = "\t", row.names = FALSE, quote = FALSE
+)
+
+## Export Metagene List Name
+metagene_df <- data.frame(
+  name = vapply(metagene_s3, function(x) x$path_name, character(1)),
+  size = vapply(metagene_s3, function(x) x$n_genes, numeric(1)),
+  path_id = names(metagene_s3)
+)
+
+loading_information <- lapply(metagene_s3, function(x) {
+  loadings <- x$loadings
+  loadings <- as.data.frame(loadings)
+  loadings$gene <- rownames(loadings)
+  loadings <- loadings %>% gather(key = "PC", value = "loading", -gene)
+  loadings$path_id <- x$path_id
+  return(loadings)
+})
+loading_information <- do.call(rbind, loading_information)
+rownames(loading_information) <- NULL
+
+# Merge loading information with pathway information
+metagene_df_gene_level <- merge(loading_information, metagene_df, by = "path_id")
+metagene_df_gene_level <- metagene_df_gene_level[metagene_df_gene_level$PC == "PC1", ]
+write.table(metagene_df_gene_level,
+  file = "inst/app/www/data/metagene_df_gene_level_s3.txt",
+  sep = "\t", row.names = FALSE, quote = FALSE
+)
+
+# PC info extract "variance_explained", "sd", "path_id"
+pc_info <- lapply(metagene_s3, function(x) {
+  return(data.frame(
+    path_id = rep(x$path_id, length(x$variance_explained)),
+    pc = paste0("PC", 1:length(x$variance_explained)),
+    variance_explained = x$variance_explained,
+    sd = x$sd,
+    cum_var = x$cum_var
+  ))
+})
+pc_info <- do.call(rbind, pc_info)
+rownames(pc_info) <- NULL
+write.table(pc_info,
+  file = "inst/app/www/data/pc_info_s3.txt",
+  sep = "\t", row.names = FALSE, quote = FALSE
+)
+
+## Extract Metagene information
+metagene_info <- lapply(metagene_s3, function(x) {
+  return(
+    x[["pcs"]][, "PC1"]
+  )
+})
+metagene_matrix <- as.data.frame(do.call(cbind, metagene_info))
+
+## Export Metagene Matrix
+metagene_matrix <- metagene_matrix %>% rownames_to_column(var = "cell_id")
+
+write.table(metagene_matrix,
+  file = "inst/app/www/data/metagene_matrix_s3.txt",
+  sep = "\t", row.names = FALSE, quote = FALSE
+)
+
 ## Save All the data
-save(metagene_s3, file = "data/metagene_s3.RData")
-save(norm_counts_s3, file = "data/norm_counts_s3.RData")
-save(cell_data_s3, file = "data/cell_data_s3.RData")
-save(edge_list_s3, file = "data/edge_list_s3.RData")
-save(node_df_s3, file = "data/node_df_s3.RData")
-tools::resaveRdaFiles(paths = "data/")
+# save(metagene_s3, file = "inst/app/www/data/metagene_s3.RData")
+tools::resaveRdaFiles(paths = "inst/app/www/data/")

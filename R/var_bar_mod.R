@@ -142,3 +142,100 @@ var_bar_server <- function(id,
     }
   )
 }
+
+
+#
+# library(highcharter)
+# pc_info <- data.table::fread(
+#     file = "inst/app/www/data/pc_info_s3.txt",
+#     sep = "\t", header = TRUE,
+#     data.table = TRUE,
+#     select = c(1:4),
+#     stringsAsFactors = FALSE
+# )
+# pc_info <- pc_info[pc_info$path_id == "hsa00590", c("pc", "variance_explained", "sd"),drop=FALSE]
+# main_title ="Variance Explained Per PC"
+# sub_title =NULL
+# x_label = "Principal Components"
+# y_label = "Variance Explained (%)"
+# hchart(
+#     pc_info,
+#     "column",
+#     hcaes(x = pc, y = round(variance_explained, 3)),
+# ) %>%
+#     hc_add_series(
+#         pc_info,
+#         "errorbar",
+#         hcaes(y = variance_explained, x = pc, low = variance_explained - sd, high = variance_explained + sd),
+#         enableMouseTracking = TRUE,
+#         showInLegend = FALSE
+#     ) %>%
+#     hc_plotOptions(
+#         errorbar = list(
+#             color = "#fde725",
+#             # whiskerLength = 1,
+#             stemWidth = 1
+#         ),
+#         column = list(
+#             color = "#21918c",
+#             borderColor = "#f98e09",
+#             opacity = 0.7
+#         )
+#     )%>%
+#     highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
+#     highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
+#     highcharter::hc_xAxis(
+#         title = list(
+#             text = x_label,
+#             style = list(color = "white")
+#         ),
+#         lineColor = "white",
+#         lineWidth = 2,
+#         gridLineWidth = 0,
+#         labels = list(style = list(color = "white"))
+#     ) %>%
+#     highcharter::hc_yAxis(
+#         title = list(
+#             text = y_label,
+#             style = list(color = "white")
+#         ),
+#         lineColor = "white",
+#         lineWidth = 2,
+#         gridLineWidth = 0,
+#         labels = list(style = list(color = "white"))
+#     ) %>%
+#     highcharter::hc_legend(enabled = TRUE) %>%
+#     highcharter::hc_add_theme(
+#         highcharter::hc_theme(
+#             line = list(
+#                 color = "white"
+#             ),
+#             chart = list(
+#                 backgroundColor = "#222222"
+#             ),
+#             # Remove colors from the theme to prevent overriding
+#             # colors = colors,
+#             title = list(
+#                 style = list(
+#                     color = "white",
+#                     fontFamily = "Times",
+#                     fontSize = "25px"
+#                 )
+#             ),
+#             subtitle = list(
+#                 style = list(
+#                     color = "white",
+#                     fontFamily = "Times",
+#                     fontSize = "15px"
+#                 )
+#             ),
+#             legend = list(
+#                 itemStyle = list(
+#                     fontFamily = "Times",
+#                     color = "white"
+#                 ),
+#                 itemHoverStyle = list(
+#                     color = "yellow"
+#                 )
+#             )
+#         ))

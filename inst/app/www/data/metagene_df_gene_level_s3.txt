@@ -1,0 +1,242 @@
+path_id	gene	PC	loading	name	size
+hsa00590	CYP2J2	PC1	-0.00129674033418303	Arachidonic acid metabolism	11
+hsa00590	PTGS2	PC1	0.0274473443343033	Arachidonic acid metabolism	11
+hsa00590	PLA2G4A	PC1	-0.955755185854947	Arachidonic acid metabolism	11
+hsa00590	PLB1	PC1	-0.0017287428404567	Arachidonic acid metabolism	11
+hsa00590	HPGDS	PC1	-0.258670306093815	Arachidonic acid metabolism	11
+hsa00590	HPGD	PC1	-0.0787108726269386	Arachidonic acid metabolism	11
+hsa00590	LTC4S	PC1	-0.0108307607623007	Arachidonic acid metabolism	11
+hsa00590	CYP2C8	PC1	0.00909049467739098	Arachidonic acid metabolism	11
+hsa00590	ALOX12	PC1	0.00358748674535333	Arachidonic acid metabolism	11
+hsa00590	PLA2G4C	PC1	0.00676523624697352	Arachidonic acid metabolism	11
+hsa00590	PLA2G6	PC1	0.111398780217333	Arachidonic acid metabolism	11
+hsa02010	ABCA4	PC1	-0.00311019920990691	ABC transporters	15
+hsa02010	ABCB10	PC1	0.0202986487509674	ABC transporters	15
+hsa02010	ABCB11	PC1	0.0199671281076543	ABC transporters	15
+hsa02010	ABCC5	PC1	0.10856642370921	ABC transporters	15
+hsa02010	ABCA13	PC1	-0.0131408587431785	ABC transporters	15
+hsa02010	ABCB1	PC1	-0.0630342933767272	ABC transporters	15
+hsa02010	ABCA1	PC1	-0.0023029729800105	ABC transporters	15
+hsa02010	ABCB9	PC1	0.0246650282854821	ABC transporters	15
+hsa02010	ABCC4	PC1	0.942299513892429	ABC transporters	15
+hsa02010	ABCA3	PC1	-0.00839373741107678	ABC transporters	15
+hsa02010	ABCC1	PC1	-0.304263430425202	ABC transporters	15
+hsa02010	ABCA10	PC1	-0.00946992998732074	ABC transporters	15
+hsa02010	ABCA5	PC1	-0.0124725523436899	ABC transporters	15
+hsa02010	ABCA7	PC1	0.0154056780733536	ABC transporters	15
+hsa02010	ABCG1	PC1	-0.0396941114830152	ABC transporters	15
+hsa03010	RPS8	PC1	-0.211317255071458	Ribosome	21
+hsa03010	MRPS9	PC1	-0.0196010053497767	Ribosome	21
+hsa03010	RPL37A	PC1	-0.288741197994956	Ribosome	21
+hsa03010	MRPL3	PC1	-0.0835904152834802	Ribosome	21
+hsa03010	RPL22L1	PC1	-0.221927942281601	Ribosome	21
+hsa03010	MRPL1	PC1	-0.0375933187237842	Ribosome	21
+hsa03010	RPL37	PC1	-0.258251416725774	Ribosome	21
+hsa03010	RPS23	PC1	-0.223525113450226	Ribosome	21
+hsa03010	RPS18	PC1	-0.245275232423968	Ribosome	21
+hsa03010	RPS12	PC1	-0.225983152258982	Ribosome	21
+hsa03010	RPS20	PC1	-0.24961207073637	Ribosome	21
+hsa03010	RPL8	PC1	-0.239482388841115	Ribosome	21
+hsa03010	RPS6	PC1	-0.198325140601477	Ribosome	21
+hsa03010	RPLP2	PC1	-0.218962341970562	Ribosome	21
+hsa03010	MRPL17	PC1	-0.0360834731394401	Ribosome	21
+hsa03010	RPL41	PC1	-0.226165560032788	Ribosome	21
+hsa03010	RPLP1	PC1	-0.245525638126061	Ribosome	21
+hsa03010	RPS15A	PC1	-0.233983929783279	Ribosome	21
+hsa03010	RPL23	PC1	-0.234260937364147	Ribosome	21
+hsa03010	RPS16	PC1	-0.310660226521	Ribosome	21
+hsa03010	RPS21	PC1	-0.245445694108475	Ribosome	21
+hsa03015	SMG7	PC1	-0.0259220362124306	mRNA surveillance pathway	10
+hsa03015	PPP1CB	PC1	-0.0934359378484288	mRNA surveillance pathway	10
+hsa03015	PAPOLG	PC1	-0.0204451507738618	mRNA surveillance pathway	10
+hsa03015	PPP2R3A	PC1	-0.0602616339283808	mRNA surveillance pathway	10
+hsa03015	PPP2R2B	PC1	-0.00676159654714324	mRNA surveillance pathway	10
+hsa03015	HBS1L	PC1	0.20583806470177	mRNA surveillance pathway	10
+hsa03015	GSPT1	PC1	0.138673032637676	mRNA surveillance pathway	10
+hsa03015	SMG6	PC1	0.0605953106800386	mRNA surveillance pathway	10
+hsa03015	MSI2	PC1	-0.959792502107694	mRNA surveillance pathway	10
+hsa03015	PABPC1L	PC1	0.00544316227729969	mRNA surveillance pathway	10
+hsa03410	POLE4	PC1	-0.00106905823809685	Base excision repair	10
+hsa03410	RFC4	PC1	-0.0234444773791966	Base excision repair	10
+hsa03410	POLE3	PC1	-0.0928887183561026	Base excision repair	10
+hsa03410	PARG	PC1	-0.0344527565272486	Base excision repair	10
+hsa03410	UNG	PC1	-0.034550362018239	Base excision repair	10
+hsa03410	POLE	PC1	-0.0611010243852014	Base excision repair	10
+hsa03410	HMGB1	PC1	-0.988837731804218	Base excision repair	10
+hsa03410	RFC3	PC1	0.011328836150709	Base excision repair	10
+hsa03410	POLE2	PC1	-0.0805379295168606	Base excision repair	10
+hsa03410	LIG1	PC1	-0.0170904654447944	Base excision repair	10
+hsa03440	BARD1	PC1	0.00869566196339865	Homologous recombination	10
+hsa03440	TOPBP1	PC1	-0.0351452185114584	Homologous recombination	10
+hsa03440	UIMC1	PC1	0.0930636969591088	Homologous recombination	10
+hsa03440	XRCC2	PC1	0.00861954097989637	Homologous recombination	10
+hsa03440	BRCA2	PC1	-0.0103493457099011	Homologous recombination	10
+hsa03440	RAD51B	PC1	0.994075683141801	Homologous recombination	10
+hsa03440	BLM	PC1	0.0180323133076987	Homologous recombination	10
+hsa03440	BRCA1	PC1	-0.00833449769626568	Homologous recombination	10
+hsa03440	BRIP1	PC1	0.0354903661064162	Homologous recombination	10
+hsa03440	BRCC3	PC1	-0.0025067645470469	Homologous recombination	10
+hsa04610	C1QA	PC1	-0.00369682520623256	Complement and coagulation cascades	21
+hsa04610	F3	PC1	0.000432740122313202	Complement and coagulation cascades	21
+hsa04610	F5	PC1	-0.00209178726869524	Complement and coagulation cascades	21
+hsa04610	CR1	PC1	-0.0319312499166459	Complement and coagulation cascades	21
+hsa04610	CR1L	PC1	-0.00139100778506044	Complement and coagulation cascades	21
+hsa04610	TFPI	PC1	0.997716610169417	Complement and coagulation cascades	21
+hsa04610	SERPINE2	PC1	-0.0361614865533667	Complement and coagulation cascades	21
+hsa04610	PROS1	PC1	0.00180304178658483	Complement and coagulation cascades	21
+hsa04610	F13A1	PC1	-0.00247685974264173	Complement and coagulation cascades	21
+hsa04610	C2	PC1	0.0112254711105623	Complement and coagulation cascades	21
+hsa04610	SERPINE1	PC1	0.0101517608528705	Complement and coagulation cascades	21
+hsa04610	CLU	PC1	0.0322119441811201	Complement and coagulation cascades	21
+hsa04610	C5	PC1	-0.0189222719111921	Complement and coagulation cascades	21
+hsa04610	PLAU	PC1	0.00749970301535754	Complement and coagulation cascades	21
+hsa04610	VWF	PC1	0.0109821849345938	Complement and coagulation cascades	21
+hsa04610	C1S	PC1	-0.00548874951285856	Complement and coagulation cascades	21
+hsa04610	ITGAM	PC1	-0.0106670873803625	Complement and coagulation cascades	21
+hsa04610	C3	PC1	0.00904430974725325	Complement and coagulation cascades	21
+hsa04610	PROCR	PC1	-0.00362947997199341	Complement and coagulation cascades	21
+hsa04610	SERPIND1	PC1	-0.00288912346342536	Complement and coagulation cascades	21
+hsa04610	F8	PC1	0.0124875932008576	Complement and coagulation cascades	21
+hsa04612	CREB1	PC1	0.0209037220936432	Antigen processing and presentation	16
+hsa04612	CD74	PC1	-0.609646071040712	Antigen processing and presentation	16
+hsa04612	HLA-DRA	PC1	-0.561768582488548	Antigen processing and presentation	16
+hsa04612	HLA-DRB1	PC1	-0.211220488430932	Antigen processing and presentation	16
+hsa04612	HLA-DMB	PC1	-0.0442548496803572	Antigen processing and presentation	16
+hsa04612	HLA-DOA	PC1	-0.00819990398908384	Antigen processing and presentation	16
+hsa04612	HLA-DPA1	PC1	-0.289350015050065	Antigen processing and presentation	16
+hsa04612	HLA-DPB1	PC1	-0.417319961936983	Antigen processing and presentation	16
+hsa04612	NFYA	PC1	0.00343908268196147	Antigen processing and presentation	16
+hsa04612	CTSL	PC1	0.0333522477506996	Antigen processing and presentation	16
+hsa04612	HSPA5	PC1	0.00933975083392594	Antigen processing and presentation	16
+hsa04612	HSPA8	PC1	0.0519475742536512	Antigen processing and presentation	16
+hsa04612	CD4	PC1	0.00729065205371443	Antigen processing and presentation	16
+hsa04612	LGMN	PC1	-0.00697116457300149	Antigen processing and presentation	16
+hsa04612	HSP90AA1	PC1	0.0136649770963781	Antigen processing and presentation	16
+hsa04612	CALR	PC1	-0.0599424056801933	Antigen processing and presentation	16
+hsa04672	CXCR4	PC1	0.00876551278433247	Intestinal immune network for IgA production	15
+hsa04672	ITGA4	PC1	0.0386387846469156	Intestinal immune network for IgA production	15
+hsa04672	IL15	PC1	-0.0243739226018423	Intestinal immune network for IgA production	15
+hsa04672	CCL28	PC1	-0.0387451489843067	Intestinal immune network for IgA production	15
+hsa04672	HLA-DRA	PC1	-0.69886587694158	Intestinal immune network for IgA production	15
+hsa04672	HLA-DRB1	PC1	-0.256349448548467	Intestinal immune network for IgA production	15
+hsa04672	HLA-DMB	PC1	-0.0504393326820712	Intestinal immune network for IgA production	15
+hsa04672	HLA-DOA	PC1	-0.0100735407066183	Intestinal immune network for IgA production	15
+hsa04672	HLA-DPA1	PC1	-0.350539572433933	Intestinal immune network for IgA production	15
+hsa04672	HLA-DPB1	PC1	-0.531512521520071	Intestinal immune network for IgA production	15
+hsa04672	IL15RA	PC1	-0.00971617175167645	Intestinal immune network for IgA production	15
+hsa04672	TNFSF13B	PC1	0.1712871519647	Intestinal immune network for IgA production	15
+hsa04672	MAP3K14	PC1	-0.00699088052698357	Intestinal immune network for IgA production	15
+hsa04672	TGFB1	PC1	-0.0640075659172353	Intestinal immune network for IgA production	15
+hsa04672	CD40LG	PC1	0.0244477709402636	Intestinal immune network for IgA production	15
+hsa04742	CHRM3	PC1	-0.554871047064012	Taste transduction	14
+hsa04742	SCN3A	PC1	0.00691748318275909	Taste transduction	14
+hsa04742	SCN9A	PC1	-0.116488725384098	Taste transduction	14
+hsa04742	PDE1A	PC1	-0.00250022583734532	Taste transduction	14
+hsa04742	HTR1F	PC1	-0.541895485162031	Taste transduction	14
+hsa04742	GABBR1	PC1	-0.0202080801325359	Taste transduction	14
+hsa04742	KCNK5	PC1	0.00842315344530224	Taste transduction	14
+hsa04742	PDE1C	PC1	-0.0105523107199715	Taste transduction	14
+hsa04742	CACNA1C	PC1	-0.0033686368254875	Taste transduction	14
+hsa04742	SCNN1A	PC1	-0.000168532049924962	Taste transduction	14
+hsa04742	TAS2R30	PC1	-0.00435516370123811	Taste transduction	14
+hsa04742	PKD1L3	PC1	0.00357672266600618	Taste transduction	14
+hsa04742	PLCB1	PC1	-0.591551478324058	Taste transduction	14
+hsa04742	PLCB4	PC1	-0.185139739516233	Taste transduction	14
+hsa04940	IL1B	PC1	0.0538945365702321	Type I diabetes mellitus	12
+hsa04940	GAD1	PC1	0.0244003681346414	Type I diabetes mellitus	12
+hsa04940	HSPD1	PC1	0.172066918341252	Type I diabetes mellitus	12
+hsa04940	IL12A	PC1	-0.00172667601239496	Type I diabetes mellitus	12
+hsa04940	HLA-DRA	PC1	-0.701240315906243	Type I diabetes mellitus	12
+hsa04940	HLA-DRB1	PC1	-0.255501265347351	Type I diabetes mellitus	12
+hsa04940	HLA-DMB	PC1	-0.0517853597410101	Type I diabetes mellitus	12
+hsa04940	HLA-DOA	PC1	-0.0107043626186748	Type I diabetes mellitus	12
+hsa04940	HLA-DPA1	PC1	-0.348631766541731	Type I diabetes mellitus	12
+hsa04940	HLA-DPB1	PC1	-0.533649872341951	Type I diabetes mellitus	12
+hsa04940	ICA1	PC1	-0.00451786640622365	Type I diabetes mellitus	12
+hsa04940	PTPRN2	PC1	0.026983421703898	Type I diabetes mellitus	12
+hsa04976	SLC2A1	PC1	0.0349127820231041	Bile secretion	17
+hsa04976	ATP1A1	PC1	-0.0248029462523185	Bile secretion	17
+hsa04976	EPHX1	PC1	-0.0090824539422114	Bile secretion	17
+hsa04976	ADCY3	PC1	-0.0119569239785672	Bile secretion	17
+hsa04976	ABCB11	PC1	0.0220460052749177	Bile secretion	17
+hsa04976	ATP1B3	PC1	-0.0882834523974776	Bile secretion	17
+hsa04976	NCEH1	PC1	-0.0131108428442597	Bile secretion	17
+hsa04976	SLC4A4	PC1	0.026695458088668	Bile secretion	17
+hsa04976	ADCY2	PC1	-0.00394919958577407	Bile secretion	17
+hsa04976	ABCB1	PC1	-0.0630514407165193	Bile secretion	17
+hsa04976	CA2	PC1	-0.00902225078047979	Bile secretion	17
+hsa04976	SCARB1	PC1	-0.0032777361616342	Bile secretion	17
+hsa04976	ABCC4	PC1	0.99170799248104	Bile secretion	17
+hsa04976	ADCY9	PC1	0.00710988738537749	Bile secretion	17
+hsa04976	AQP8	PC1	-0.00348784423824277	Bile secretion	17
+hsa04976	ADCY7	PC1	-0.00843765575386731	Bile secretion	17
+hsa04976	LDLR	PC1	-0.0327725441608344	Bile secretion	17
+hsa04979	SORT1	PC1	-0.010199992301487	Cholesterol metabolism	13
+hsa04979	SOAT1	PC1	0.01853868095109	Cholesterol metabolism	13
+hsa04979	ABCB11	PC1	-0.0210322214315402	Cholesterol metabolism	13
+hsa04979	NCEH1	PC1	-0.0112105384836719	Cholesterol metabolism	13
+hsa04979	CD36	PC1	0.131981843180085	Cholesterol metabolism	13
+hsa04979	ABCA1	PC1	-0.069161665852064	Cholesterol metabolism	13
+hsa04979	LIPA	PC1	-0.0293878267754471	Cholesterol metabolism	13
+hsa04979	OSBPL5	PC1	-0.0376658513468377	Cholesterol metabolism	13
+hsa04979	APOA1	PC1	4.99909231535291e-05	Cholesterol metabolism	13
+hsa04979	SCARB1	PC1	0.0111325042149624	Cholesterol metabolism	13
+hsa04979	LDLR	PC1	-0.0226217498178676	Cholesterol metabolism	13
+hsa04979	APOE	PC1	0.085707137821116	Cholesterol metabolism	13
+hsa04979	APOC1	PC1	0.983116448389403	Cholesterol metabolism	13
+hsa05110	ADCY3	PC1	0.0268278444203365	Vibrio cholerae infection	10
+hsa05110	ATP6V1A	PC1	-0.101501558045463	Vibrio cholerae infection	10
+hsa05110	SLC12A2	PC1	0.010757061699913	Vibrio cholerae infection	10
+hsa05110	ACTB	PC1	0.992951161725111	Vibrio cholerae infection	10
+hsa05110	TCIRG1	PC1	-0.00515091166734623	Vibrio cholerae infection	10
+hsa05110	ADCY9	PC1	0.0206345141356935	Vibrio cholerae infection	10
+hsa05110	PLCG2	PC1	0.00470348708729051	Vibrio cholerae infection	10
+hsa05110	PRKCA	PC1	-0.0483181725698245	Vibrio cholerae infection	10
+hsa05110	ATP6V1E1	PC1	0.009726942337971	Vibrio cholerae infection	10
+hsa05110	KDELR3	PC1	0.0025058865302568	Vibrio cholerae infection	10
+hsa05150	C1QA	PC1	-0.00151579466382708	Staphylococcus aureus infection	16
+hsa05150	SELP	PC1	-0.0365205972134723	Staphylococcus aureus infection	16
+hsa05150	C2	PC1	-0.0117405961336955	Staphylococcus aureus infection	16
+hsa05150	HLA-DRA	PC1	-0.709717269103696	Staphylococcus aureus infection	16
+hsa05150	HLA-DRB1	PC1	-0.261396490256833	Staphylococcus aureus infection	16
+hsa05150	HLA-DMB	PC1	-0.0508301781033489	Staphylococcus aureus infection	16
+hsa05150	HLA-DOA	PC1	-0.0107143993517303	Staphylococcus aureus infection	16
+hsa05150	HLA-DPA1	PC1	-0.356531793990933	Staphylococcus aureus infection	16
+hsa05150	HLA-DPB1	PC1	-0.543175842419198	Staphylococcus aureus infection	16
+hsa05150	C5	PC1	-0.0202512091474674	Staphylococcus aureus infection	16
+hsa05150	C1S	PC1	0.00572072396201544	Staphylococcus aureus infection	16
+hsa05150	KRT18	PC1	-0.0243684710476631	Staphylococcus aureus infection	16
+hsa05150	ITGAL	PC1	-0.013039885828786	Staphylococcus aureus infection	16
+hsa05150	ITGAM	PC1	0.0207980549400746	Staphylococcus aureus infection	16
+hsa05150	C3	PC1	0.0012422813894676	Staphylococcus aureus infection	16
+hsa05150	ICAM1	PC1	-0.00227085475030974	Staphylococcus aureus infection	16
+hsa05204	PTGS2	PC1	0.016491320589152	Chemical carcinogenesis - DNA adducts	10
+hsa05204	EPHX1	PC1	-0.000451167257527141	Chemical carcinogenesis - DNA adducts	10
+hsa05204	HPGDS	PC1	0.0821543769971532	Chemical carcinogenesis - DNA adducts	10
+hsa05204	NAT1	PC1	-0.00245028397016676	Chemical carcinogenesis - DNA adducts	10
+hsa05204	AKR1C2	PC1	0.00383069061073986	Chemical carcinogenesis - DNA adducts	10
+hsa05204	CYP2C8	PC1	0.0129395741034744	Chemical carcinogenesis - DNA adducts	10
+hsa05204	GSTO1	PC1	-0.0426113472773392	Chemical carcinogenesis - DNA adducts	10
+hsa05204	GSTO2	PC1	-0.014101827703323	Chemical carcinogenesis - DNA adducts	10
+hsa05204	GSTP1	PC1	-0.982315810457947	Chemical carcinogenesis - DNA adducts	10
+hsa05204	MGST1	PC1	-0.160721624358563	Chemical carcinogenesis - DNA adducts	10
+hsa05216	GADD45A	PC1	-0.0700685869563972	Thyroid cancer	10
+hsa05216	NTRK1	PC1	0.00446746124025321	Thyroid cancer	10
+hsa05216	LEF1	PC1	-0.0160965071530772	Thyroid cancer	10
+hsa05216	CDKN1A	PC1	-0.00305974136954422	Thyroid cancer	10
+hsa05216	MYC	PC1	-0.993989264521132	Thyroid cancer	10
+hsa05216	CCDC6	PC1	0.0091713680866121	Thyroid cancer	10
+hsa05216	TCF7L2	PC1	0.0783104748061449	Thyroid cancer	10
+hsa05216	DDB2	PC1	-0.0104859270638575	Thyroid cancer	10
+hsa05216	MAP2K1	PC1	0.00159066524257147	Thyroid cancer	10
+hsa05216	CDH1	PC1	-0.0214053271340808	Thyroid cancer	10
+hsa05310	FCER1A	PC1	0.0132002367101648	Asthma	10
+hsa05310	FCER1G	PC1	-0.00643710122217467	Asthma	10
+hsa05310	HLA-DRA	PC1	0.711255979535598	Asthma	10
+hsa05310	HLA-DRB1	PC1	0.261789811542549	Asthma	10
+hsa05310	HLA-DMB	PC1	0.0509060600732062	Asthma	10
+hsa05310	HLA-DOA	PC1	0.0106052551810491	Asthma	10
+hsa05310	HLA-DPA1	PC1	0.356720469248798	Asthma	10
+hsa05310	HLA-DPB1	PC1	0.542868008355332	Asthma	10
+hsa05310	MS4A2	PC1	-0.0111881844718964	Asthma	10
+hsa05310	CD40LG	PC1	-0.0241060591521893	Asthma	10

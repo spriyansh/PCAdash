@@ -4,7 +4,7 @@ testthat::test_that("All required packages are installed", {
   desc <- read.dcf(system.file("DESCRIPTION", package = "PCAdash"))
 
   # Extract dependencies from Depends, Imports, and Suggests
-  #fields <- c("Imports", "Suggests")
+  # fields <- c("Imports", "Suggests")
   fields <- c("Imports")
 
   # Combine dependencies and split by comma

@@ -81,7 +81,7 @@ shiny::navbarPage(
         shiny::fluidRow(
           shiny::column(4, var_bar_ui("variance_bar")),
           shiny::column(4, ts_xy_ui("metagene")),
-          shiny::column(4, lt_xy_ui("latent_plot")),
+          shiny::column(4, lt_xy_ui("latent_plot") %>% shinycssloaders::withSpinner()),
         ),
         hr(),
         shiny::fluidRow(
