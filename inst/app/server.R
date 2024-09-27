@@ -2,10 +2,36 @@ function(input, output, session) {
   # Plan for async
   future::plan(future::multisession)
 
-  # Initialize reactiveVal for metagene_id
-  metagene_id <- reactiveVal(NULL)
-  gene_list <- reactiveVal(NULL)
-  activate_legend <- reactiveVal(FALSE)
+  # Workflow Sankey Promise
+  worflow_sankey_data_promise <- promises::future_promise({
+    analysis_flow_nodes <- data.table::fread(
+      file = "www/data/analysis_flow_nodes.txt",
+      sep = "\t", header = TRUE, data.table = FALSE,
+      stringsAsFactors = TRUE
+    )
+    analysis_flow_Links <- data.table::fread(
+      file = "www/data/analysis_flow_links.txt",
+      sep = "\t", header = TRUE, data.table = FALSE,
+      stringsAsFactors = TRUE
+    )
+
+    # Map node IDs to node names
+    node_names <- analysis_flow_nodes$name
+    names(node_names) <- as.character(analysis_flow_nodes$node)
+
+    # Prepare data for Sankey diagram
+    sankey_links <- data.frame(
+      from = node_names[as.character(analysis_flow_Links$source)],
+      to = node_names[as.character(analysis_flow_Links$target)],
+      weight = analysis_flow_Links$value,
+      stringsAsFactors = FALSE
+    )
+
+    # Convert data frame to list for highcharter
+    sankey_data <- highcharter::list_parse(sankey_links)
+    return(sankey_data)
+  })
+
 
   # Create promises for data loading
   cell_data_promise <- promises::future_promise({
@@ -49,6 +75,21 @@ function(input, output, session) {
     )
   })
 
+  # Reactive value to store the cell data
+  cell_data <- reactiveVal(NULL)
+  node_data <- reactiveVal(NULL)
+  edge_list_data <- reactiveVal(NULL)
+  sankey_list_data <- reactiveVal(NULL)
+  # Use promise_all to wait for both data loading promises
+  promises::promise_all(sankey_info = worflow_sankey_data_promise, cell = cell_data_promise, node = node_data_promise, edge_list = edge_list_data_promise) %...>% (function(data_list) {
+    cell_data(data_list$cell)
+    node_data(data_list$node)
+    edge_list_data(data_list$edge_list)
+    sankey_list_data(data_list$sankey_info)
+  }) %...!% (function(error) {
+    showNotification(paste("Error loading data:", error$message), type = "error")
+  })
+
   # Define Reactive
   metagene_id_list <- reactiveVal(NULL)
   gene_level_info <- reactiveVal(NULL)
@@ -62,19 +103,6 @@ function(input, output, session) {
     pc_info(data_list$pc_info)
   }) %...!% (function(error) {
     showNotification(paste("Error Metagene data:", error$message), type = "error")
-  })
-
-  # Reactive value to store the cell data
-  cell_data <- reactiveVal(NULL)
-  node_data <- reactiveVal(NULL)
-  edge_list_data <- reactiveVal(NULL)
-  # Use promise_all to wait for both data loading promises
-  promises::promise_all(cell = cell_data_promise, node = node_data_promise, edge_list = edge_list_data_promise) %...>% (function(data_list) {
-    cell_data(data_list$cell)
-    node_data(data_list$node)
-    edge_list_data(data_list$edge_list)
-  }) %...!% (function(error) {
-    showNotification(paste("Error loading data:", error$message), type = "error")
   })
 
   # Load UMAP coordinates
@@ -105,6 +133,7 @@ function(input, output, session) {
   })
 
   # Update Selected gene list
+  gene_list <- reactiveVal(NULL)
   observeEvent(list(input$pathway_select, gene_level_info()), {
     req(input$pathway_select, gene_level_info())
     tmp <- unique(unlist(gene_level_info()[gene_level_info()$path_id == input$pathway_select, "gene", drop = TRUE]))
@@ -258,128 +287,20 @@ function(input, output, session) {
     )
   })
 
+  observeEvent(sankey_list_data(), {
+    req(sankey_list_data())
 
-  pTime <- seq(1, 10, 1)
-  vis_params_metagene <- vis_params_server("vis_params_metagene",
-    plot_type = reactive(input$plot_select),
-    max_bar_pc = reactive(
-      length(metagene_results[[metagene_id()]]$variance_per_pc)
-    )
-  )
-  vis_params_polar <- vis_params_server("vis_params_polar",
-    plot_type = reactive(input$plot_select),
-    max_bar_pc = reactive(
-      length(metagene_results[[metagene_id()]]$variance_per_pc)
-    )
-  )
-
-  vis_params_latent <- vis_params_server("vis_params_latent",
-    plot_type = reactive(input$plot_select),
-    max_bar_pc = reactive(
-      length(metagene_results[[metagene_id()]]$variance_per_pc)
-    )
-  )
-  vis_params_contri <- vis_params_server("vis_params_contri",
-    plot_type = reactive(input$plot_select),
-    max_bar_pc = reactive(
-      length(metagene_results[[metagene_id()]]$variance_per_pc)
-    )
-  )
-  vis_params_contri_single <- vis_params_server("vis_params_contri_single",
-    plot_type = reactive(input$plot_select),
-    max_bar_pc = reactive(
-      length(metagene_results[[metagene_id()]]$variance_per_pc)
-    )
-  )
-
-
-  observeEvent(input$plot_select, {
-    if (input$plot_select == "metagene") {
-      activate_legend(TRUE)
-    } else if (input$plot_select == "variance_bar") {
-      activate_legend(TRUE)
-    } else if (input$plot_select == "latent_plot") {
-      activate_legend(TRUE)
-    } else if (input$plot_select == "contri_features") {
-      activate_legend(TRUE)
-    } else if (input$plot_select == "contri_features_single") {
-      activate_legend(TRUE)
-    } else if (input$plot_select == "variance_polar") {
-      activate_legend(TRUE)
-    } else {
-      activate_legend(FALSE)
-    }
-  })
-
-
-  # Dynamically render the UI for the correct plot type
-  output$dynamic_vis_params_ui <- renderUI({
-    if (input$plot_select %in% c("metagene", "variance_bar")) {
-      vis_params_ui("vis_params_metagene")
-    } else if (input$plot_select == "latent_plot") {
-      vis_params_ui("vis_params_latent")
-    } else if (input$plot_select == "contri_features") {
-      vis_params_ui("vis_params_contri")
-    } else if (input$plot_select == "contri_features_single") {
-      vis_params_ui("vis_params_contri_single")
-    } else if (input$plot_select == "variance_polar") {
-      vis_params_ui("vis_params_polar")
-    } else {
-      print("No matching plot type found")
-    }
-  })
-
-  output$sankey_workflow <- highcharter::renderHighchart({
-    # Load necessary library
-    library(highcharter)
-
-    # Create analysis_flow_nodes data frame
-    analysis_flow_nodes <- data.frame(
-      name = c(
-        "Raw Counts", "Normalized Counts", "KEGG DB", "Subset by GeneSet", "Subset-Pathway-1",
-        "Subset-Pathway-2", "Subset-Pathway-3", "Subset-Pathway-4", "Subset-Pathway-...",
-        "Subset-Pathway-n", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var", "PC-Max-Var",
-        "PC-Max-Var", "Monocle3", "Inferred Pseudotime", "Meagene-1", "Meagene-2", "Meagene-3",
-        "Meagene-4", "Meagene-...", "Meagene-N"
-      ),
-      node = 0:23,
-      grp = rep("same_node", 24),
-      stringsAsFactors = FALSE
-    )
-
-    # Create analysis_flow_Links data frame
-    analysis_flow_Links <- data.frame(
-      source = c(0, 1, 2, 3, 3, 3, 3, 3, 3, 4, 5, 6, 7, 8, 9, 0, 16, 17, 17, 17, 17, 17, 17, 10, 11, 12, 13, 14, 15),
-      target = c(1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 18, 19, 20, 21, 22, 23),
-      value = c(20, 20, 20, 10, 10, 10, 10, 10, 10, 5, 5, 5, 5, 5, 5, 20, 20, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
-      grp = rep("same_link", 29),
-      stringsAsFactors = FALSE
-    )
-
-    # Map node IDs to node names
-    node_names <- analysis_flow_nodes$name
-    names(node_names) <- as.character(analysis_flow_nodes$node)
-
-    # Prepare data for Sankey diagram
-    sankey_links <- data.frame(
-      from = node_names[as.character(analysis_flow_Links$source)],
-      to = node_names[as.character(analysis_flow_Links$target)],
-      weight = analysis_flow_Links$value,
-      stringsAsFactors = FALSE
-    )
-
-    # Convert data frame to list for highcharter
-    sankey_data <- list_parse(sankey_links)
-
-    # Create the Sankey diagram
-    highchart() %>%
-      hc_chart(type = "sankey") %>%
-      hc_add_series(
-        data = sankey_data,
-        dataLabels = list(
-          enabled = TRUE
-        )
-      ) %>%
-      hc_title(text = "Analysis Flow Sankey Diagram")
+    output$sankey_workflow <- highcharter::renderHighchart({
+      # Create the Sankey diagram
+      highcharter::highchart() %>%
+        highcharter::hc_chart(type = "sankey") %>%
+        highcharter::hc_add_series(
+          data = sankey_list_data(),
+          dataLabels = list(
+            enabled = TRUE
+          )
+        ) %>%
+        highcharter::hc_title(text = "Analysis Flow Sankey Diagram")
+    })
   })
 }

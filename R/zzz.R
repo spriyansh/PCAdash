@@ -10,11 +10,12 @@ dicrete_cell_color <- c("HSC" = "#56B4E9", "EMP" = "#F0E442", "Early Eryth" = "#
 #' @importFrom shinythemes shinytheme
 #' @import highcharter
 #' @importFrom grDevices hcl.colors
-#' @import magrittr
 #' @importFrom magrittr %>%
 #' @importFrom data.table fread
 #' @importFrom shinycssloaders withSpinner
+#' @importFrom shiny NS moduleServer
 #' @import promises future
+#' @importFrom bslib page_fillable
 #'
 #' @export
 black_theme <- function(activate = FALSE) {
