@@ -34,9 +34,6 @@ testthat::test_that("All required packages are installed", {
   ## Remove testthat and shinytest2
   required_packages <- required_packages[!(required_packages %in% c("testthat", "shinytest2"))]
 
-  for (pkg in required_packages) {
-    testthat::expect_true(requireNamespace(pkg, quietly = TRUE, versionCheck = TRUE),
-      info = paste("Package", pkg, "is not installed.")
-    )
-  }
+  # Test
+  testthat::expect_true(all(required_packages %in% installed.packages()))
 })

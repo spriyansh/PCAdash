@@ -14,10 +14,8 @@ lt_xy_server(
   node_x_col,
   node_y_col,
   edge_list,
-  main_title = "Trajectory UMAP",
   x_label = "UMAP-1",
-  y_label = "UMAP-2",
-  sub_title = NULL
+  y_label = "UMAP-2"
 )
 }
 \arguments{
@@ -39,13 +37,9 @@ lt_xy_server(
 
 \item{edge_list}{A reactive expression that returns a list of edge data.}
 
-\item{main_title}{The main title of the plot.}
-
 \item{x_label}{The label for the x-axis. Defaults to NULL.}
 
 \item{y_label}{The label for the y-axis. Defaults to NULL.}
-
-\item{sub_title}{An optional subtitle for the plot. Defaults to NULL.}
 }
 \description{
 A Shiny server module that renders a ggplot2-based scatter plot.

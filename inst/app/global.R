@@ -1,9 +1,8 @@
 ## Call
 suppressPackageStartupMessages({
   library(PCAdash)
-  library(promises)
-  library(future)
   library(magrittr)
+  library(promises)
 })
 
 #

@@ -32,7 +32,6 @@ function(input, output, session) {
     return(sankey_data)
   })
 
-
   # Create promises for data loading
   cell_data_promise <- promises::future_promise({
     data.table::fread(
@@ -126,26 +125,48 @@ function(input, output, session) {
     req(metagene_id_list())
     updateSelectInput(
       session,
-      inputId = "pathway_select",
+      inputId = "pathway_select_var_bar",
+      choices = metagene_id_list(),
+      selected = metagene_id_list()[1]
+    )
+    updateSelectInput(
+      session,
+      inputId = "pathway_select_metagene",
+      choices = metagene_id_list(),
+      selected = metagene_id_list()[1]
+    )
+    updateSelectInput(
+      session,
+      inputId = "pathway_select_loading",
+      choices = metagene_id_list(),
+      selected = metagene_id_list()[2]
+    )
+    updateSelectInput(
+      session,
+      inputId = "pathway_select_contri_gene",
       choices = metagene_id_list(),
       selected = metagene_id_list()[1]
     )
   })
 
   # Update Selected gene list
-  gene_list <- reactiveVal(NULL)
-  observeEvent(list(input$pathway_select, gene_level_info()), {
-    req(input$pathway_select, gene_level_info())
-    tmp <- unique(unlist(gene_level_info()[gene_level_info()$path_id == input$pathway_select, "gene", drop = TRUE]))
+  observeEvent(list(input$pathway_select_contri_gene, gene_level_info()), {
+    req(input$pathway_select_contri_gene, gene_level_info())
+
+    tmp <- unique(unlist(gene_level_info()[gene_level_info()$path_id == input$pathway_select_contri_gene, "gene", drop = TRUE]))
+
     updateSelectInput(
       session,
       inputId = "gene_select",
       choices = tmp,
-      selected = tmp[1]
+      selected = tmp[8]
     )
-    gene_list(tmp)
+  })
 
-    loading_info <- gene_level_info()[gene_level_info()$path_id == input$pathway_select, c("gene", "loading"), drop = FALSE]
+  observeEvent(list(input$pathway_select_loading, gene_level_info()), {
+    req(input$pathway_select_loading, gene_level_info())
+
+    loading_info <- gene_level_info()[gene_level_info()$path_id == input$pathway_select_loading, c("gene", "loading"), drop = FALSE]
 
     # print(loading_info)
     var_bar_server(
@@ -154,16 +175,14 @@ function(input, output, session) {
       x_col = "gene",
       sd_col = "sd",
       y_col = "loading",
-      main_title = "Loading to Metagenes",
       x_label = "Gene Ids",
       y_label = "Loadings",
-      sub_title = NULL,
       type = "bar"
     )
   })
 
-  observeEvent(input$pathway_select, {
-    req(input$pathway_select)
+  observeEvent(input$pathway_select_metagene, {
+    req(input$pathway_select_metagene)
     # Load columns
     col_names <- data.table::fread(
       file = "www/data/metagene_matrix_s3.txt",
@@ -171,7 +190,8 @@ function(input, output, session) {
       stringsAsFactors = TRUE,
       nrows = 1
     )
-    idx <- which(col_names == input$pathway_select)
+    idx <- which(col_names == input$pathway_select_metagene)
+    # idx <- which(col_names == "hsa00513")
 
     # Load metagene data
     metagene_vals <- data.table::fread(
@@ -189,37 +209,29 @@ function(input, output, session) {
 
     # Compute Smoother
     metagene_ts <- data.frame(pseudotime = pseudotime[, 1], metagene = metagene_vals[, 1])
-    smoothed_data <- with(metagene_ts, smooth.spline(pseudotime, metagene, spar = 2))
-    smoothed_df <- data.frame(pseudotime = smoothed_data$x, metagene = smoothed_data$y)
 
-    smoothed_data <- smoothed_df %>%
-      dplyr::arrange(pseudotime) %>%
-      dplyr::mutate(x = pseudotime, y = metagene) %>%
-      dplyr::select(x, y)
+    # Create Spline Cubic Regression spline
+    model <- mgcv::gam(formula = metagene ~ s(pseudotime, k = 6), data = metagene_ts, method = "REML")
+    metagene_ts$smoother <- predict(model, newdata = metagene_ts)
+    rm(model)
 
-    # For original data
-    original_data <- metagene_ts %>%
-      dplyr::arrange(pseudotime) %>%
-      dplyr::mutate(x = pseudotime, y = metagene) %>%
-      dplyr::select(x, y)
-
-
+    # Metagene over Pseudotime
     ts_xy_server(
       id = "metagene",
-      smoothed_data = reactive(smoothed_data),
-      original_data = reactive(original_data),
-      main_title = "Metagene Over Pseudotime",
-      sub_title = NULL,
+      df = reactive(metagene_ts),
+      smoother_col = "smoother",
+      time_col = "pseudotime",
+      point_col = "metagene",
       x_label = "Monocle3 Pseudotime",
       y_label = "Metagene Trend"
     )
   })
 
-  observeEvent(list(input$pathway_select, pc_info()), {
-    req(input$pathway_select, pc_info())
+  observeEvent(list(input$pathway_select_var_bar, pc_info()), {
+    req(input$pathway_select_var_bar, pc_info())
 
     # Get subset
-    filtered_pc_info <- pc_info()[pc_info()$path_id == input$pathway_select, c("pc", "variance_explained", "sd"), drop = FALSE]
+    filtered_pc_info <- pc_info()[pc_info()$path_id == input$pathway_select_var_bar, c("pc", "variance_explained", "sd"), drop = FALSE]
 
     var_bar_server(
       id = "variance_bar",
@@ -227,16 +239,13 @@ function(input, output, session) {
       y_col = "variance_explained",
       sd_col = "sd",
       x_col = "pc",
-      main_title = "Variance Explained Per PC",
       x_label = "Principal Components",
-      y_label = "Variance Explained (%)",
-      sub_title = NULL
+      y_label = "Variance Explained (%)"
     )
   })
 
   observeEvent(input$gene_select, {
     req(input$gene_select)
-
     # Load columns
     col_names <- data.table::fread(
       file = "www/data/norm_counts_s3.txt",
@@ -262,28 +271,20 @@ function(input, output, session) {
 
     # Compute Smoother
     count_ts <- data.frame(pseudotime = pseudotime[, 1], count = count_vals[, 1])
-    smoothed_data <- with(count_ts, smooth.spline(pseudotime, count, spar = 2))
-    smoothed_df <- data.frame(pseudotime = smoothed_data$x, count = smoothed_data$y)
 
-    smoothed_data <- smoothed_df %>%
-      dplyr::arrange(pseudotime) %>%
-      dplyr::mutate(x = pseudotime, y = count) %>%
-      dplyr::select(x, y)
-
-    # For original data
-    original_data <- count_ts %>%
-      dplyr::arrange(pseudotime) %>%
-      dplyr::mutate(x = pseudotime, y = count) %>%
-      dplyr::select(x, y)
+    # Create Spline Cubic Regression spline
+    model <- mgcv::gam(formula = count ~ s(pseudotime, k = 6), data = count_ts, method = "REML")
+    count_ts$smoother <- predict(model, newdata = count_ts)
+    rm(model)
 
     ts_xy_server(
       id = "contri_single",
-      smoothed_data = reactive(smoothed_data),
-      original_data = reactive(original_data),
-      main_title = "Metagene Over Pseudotime",
-      sub_title = NULL,
+      df = reactive(count_ts),
+      smoother_col = "smoother",
+      time_col = "pseudotime",
+      point_col = "count",
       x_label = "Monocle3 Pseudotime",
-      y_label = "Metagene Trend"
+      y_label = "Expression Trend"
     )
   })
 

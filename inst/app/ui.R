@@ -26,28 +26,21 @@ bslib::page_fluid(
   </ul>"))),
   fluidRow(shiny::column(4, offset = 4, lt_xy_ui("latent_plot") %>% shinycssloaders::withSpinner())),
   fluidRow(column(8, offset = 2, hr())),
-  fluidRow(
-    column(8,
-      offset = 2,
-      shiny::selectInput(
-        inputId = "pathway_select",
-        label = "Choose a Pathway:",
-        choices = NULL
-      ),
-      shiny::selectInput(
-        inputId = "gene_select",
-        label = "Choose a gene:",
-        choices = NULL
-      )
-    )
-  ),
   ## Variance bar plot
   fluidRow(
     column(8,
       offset = 2,
       fluidRow(
         column(6, offset = 0, var_bar_ui("variance_bar") %>% shinycssloaders::withSpinner()),
-        column(6, offset = 0, "some text")
+        column(6,
+          offset = 0, h4("Explained Variance"), p("Each principal component (PC) is responsible for orthogonally separating the variance in the data. PCA decomposes the data matrix into scores and loadings, transforming the original features into a new set of uncorrelated variables ordered by the amount of variance they explain. The total number of PCs is equal to the rank of the data matrix. In a typical scree plot, the eigenvalues—representing the variance captured by each PC—are plotted against the PCs. PC1 has the highest eigenvalue because it captures the most variance. The plot on the left extends the scree plot by showing the proportion of variance captured on the y-axis and the first 10 PCs on the x-axis.", style = "text-align: justify;"),
+          p("In the PCA-Metagene workflow, each PC can be considered a metagene. However, for downstream analysis, we retain only the PCs that capture a substantial amount of variance. Select a pathway from the drop-down list below, and the plot will update to show the proportion of captured variance for first 10 PCs, ideally PC1 and PC2 are considered as metagenes.", style = "text-align: justify;"),
+          shiny::selectInput(
+            inputId = "pathway_select_var_bar",
+            label = NULL,
+            choices = NULL
+          )
+        )
       ),
       hr()
     )
@@ -56,7 +49,15 @@ bslib::page_fluid(
     column(8,
       offset = 2,
       fluidRow(
-        column(6, offset = 0, "some text"),
+        column(6,
+          offset = 0, h4("Metagene in Pseudotime"), p("Once we have identified the principal components (PCs) with the highest explained variance, we map the score matrix to pseudotime. Instead of examining the behavior of pathways from a gene-centric view, a metagene—which is a PC capturing a substantial amount of variance—allows us to study the collective behaviors of genes in a pathway in a summarized manner. The plot on the right shows how the dynamics of a particular pathway change as the cell differentiates from stem cells to erythrocyte progenitor cells. We visualize this trend using a cubic regression spline with six knots.", style = "text-align: justify;"),
+          p("You can select a pathway from the drop-down list below, and the plot will update to show the PC1 metagene in pseudotime.", style = "text-align: justify;"),
+          shiny::selectInput(
+            inputId = "pathway_select_metagene",
+            label = NULL,
+            choices = NULL
+          )
+        ),
         column(6, offset = 0, ts_xy_ui("metagene") %>% shinycssloaders::withSpinner())
       ),
       hr()
@@ -66,8 +67,16 @@ bslib::page_fluid(
     column(8,
       offset = 2,
       fluidRow(
-        column(6, offset = 0, ts_xy_ui("contri_single") %>% shinycssloaders::withSpinner()),
-        column(6, offset = 0, "some text")
+        column(6, offset = 0, var_bar_ui("polar_bar") %>% shinycssloaders::withSpinner()),
+        column(6,
+          offset = 0, h4("Loadings"), p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod. Pellentesque diam volutpat; nostra risus a ultricies orci etiam dignissim. Vestibulum volutpat feugiat tempor potenti scelerisque fusce facilisi. Sit condimentum augue vehicula senectus consequat porta lacinia. Euismod odio phasellus nostra luctus potenti tempus quisque.", style = "text-align: justify;"),
+          p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod quisque.", style = "text-align: justify;"),
+          shiny::selectInput(
+            inputId = "pathway_select_loading",
+            label = "Choose a Pathway:",
+            choices = NULL
+          )
+        )
       ),
       hr()
     )
@@ -76,8 +85,27 @@ bslib::page_fluid(
     column(8,
       offset = 2,
       fluidRow(
-        column(6, offset = 0, "some text"),
-        column(6, offset = 0, var_bar_ui("polar_bar") %>% shinycssloaders::withSpinner())
+        column(6,
+          offset = 0, h4("Contributing Genes"), p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod. Pellentesque diam volutpat; nostra risus a ultricies orci etiam dignissim. Vestibulum volutpat feugiat tempor potenti scelerisque fusce facilisi. Sit condimentum augue vehicula senectus consequat porta lacinia. Euismod odio phasellus nostra luctus potenti tempus quisque.", style = "text-align: justify;"),
+          p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod quisque.", style = "text-align: justify;"),
+          column(
+            6,
+            shiny::selectInput(
+              inputId = "pathway_select_contri_gene",
+              label = "Choose a Pathway:",
+              choices = NULL
+            )
+          ),
+          column(
+            6,
+            shiny::selectInput(
+              inputId = "gene_select",
+              label = "Choose a gene:",
+              choices = NULL
+            )
+          )
+        ),
+        column(6, offset = 0, ts_xy_ui("contri_single") %>% shinycssloaders::withSpinner())
       )
     )
   ),

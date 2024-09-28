@@ -6,28 +6,28 @@
 \usage{
 ts_xy_server(
   id,
-  smoothed_data,
-  original_data,
-  main_title = "Main Title",
+  df,
+  time_col,
+  smoother_col,
+  point_col,
   x_label = "x_lable",
-  y_label = "y_lable",
-  sub_title = "Sub Title"
+  y_label = "y_lable"
 )
 }
 \arguments{
 \item{id}{A unique identifier for the module.}
 
-\item{smoothed_data}{A reactive expression that returns the smoothed data.}
+\item{df}{A reactive expression that returns the smoothed data.}
 
-\item{original_data}{A reactive expression that returns the original data.}
+\item{time_col}{The column name for the time variable.}
 
-\item{main_title}{The main title of the plot.}
+\item{smoother_col}{The column name for the smoother variable.}
+
+\item{point_col}{The column name for the point variable.}
 
 \item{x_label}{The label for the x-axis.}
 
 \item{y_label}{The label for the y-axis.}
-
-\item{sub_title}{An optional subtitle for the plot.}
 }
 \description{
 A Shiny server module that handles the rendering of a ggplot2-based X-Y plot

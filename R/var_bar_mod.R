@@ -19,10 +19,8 @@ var_bar_ui <- function(id) {
 #' @param x_col The column name for the x-axis.
 #' @param y_col The column name for the y-axis.
 #' @param sd_col The column name for the standard deviation values.
-#' @param main_title The main title of the plot.
 #' @param x_label The label for the x-axis. Defaults to NULL.
 #' @param y_label The label for the y-axis. Defaults to NULL.
-#' @param sub_title An optional subtitle for the plot. Defaults to NULL.
 #' @param type The type of plot to render. Defaults to "column".
 #'
 #' @export
@@ -31,10 +29,8 @@ var_bar_server <- function(id,
                            x_col,
                            y_col,
                            sd_col = NULL,
-                           main_title,
                            x_label = NULL,
                            y_label = NULL,
-                           sub_title = NULL,
                            type = "column") {
   moduleServer(
     id = id,
@@ -57,17 +53,15 @@ var_bar_server <- function(id,
             highcharter::hc_plotOptions(
               errorbar = list(
                 color = "#fde725",
-                # whiskerLength = 1,
                 stemWidth = 1
               ),
               column = list(
                 color = "#21918c",
-                borderColor = "#f98e09",
-                opacity = 0.9
+                borderColor = "#f98e09"
               )
             ) %>%
-            highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
-            highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
+            # highcharter::hc_title(text = main_title) %>%
+            # highcharter::hc_subtitle(text = main_title) %>%
             highcharter::hc_xAxis(
               title = list(
                 text = x_label,
@@ -142,8 +136,8 @@ var_bar_server <- function(id,
                 opacity = 0.9
               )
             ) %>%
-            highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
-            highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
+            # highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
+            # highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
             highcharter::hc_xAxis(
               title = list(
                 text = x_label,

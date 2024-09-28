@@ -25,10 +25,8 @@ lt_xy_ui <- function(id) {
 #' @param node_x_col The column name for the x-axis of the node data.
 #' @param node_y_col The column name for the y-axis of the node data.
 #' @param edge_list A reactive expression that returns a list of edge data.
-#' @param main_title The main title of the plot.
 #' @param x_label The label for the x-axis. Defaults to NULL.
 #' @param y_label The label for the y-axis. Defaults to NULL.
-#' @param sub_title An optional subtitle for the plot. Defaults to NULL.
 #'
 #' @export
 lt_xy_server <- function(id,
@@ -40,10 +38,8 @@ lt_xy_server <- function(id,
                          node_x_col,
                          node_y_col,
                          edge_list,
-                         main_title = "Trajectory UMAP",
                          x_label = "UMAP-1",
-                         y_label = "UMAP-2",
-                         sub_title = NULL) {
+                         y_label = "UMAP-2") {
   moduleServer(
     id = id,
     module = function(input, output, session) {
@@ -56,7 +52,7 @@ lt_xy_server <- function(id,
       # Render a plot
       output$lt_xy <- highcharter::renderHighchart({
         # Create the highchart object without the color aesthetic
-        highcharter::hchart(df(), type = "point", highcharter::hcaes(
+        highcharter::hchart(object = df(), type = "point", highcharter::hcaes(
           x = .data[[x_col]], y = .data[[y_col]],
           group = .data[[grp_col]]
         )) %>%
@@ -80,8 +76,8 @@ lt_xy_server <- function(id,
             marker = list(radius = 4)
           ) %>%
           highcharter::hc_add_series_list(edge_list()) %>%
-          highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
-          highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
+          # highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
+          # highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
           highcharter::hc_xAxis(
             title = list(
               text = x_label,

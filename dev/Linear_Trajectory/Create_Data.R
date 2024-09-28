@@ -3,7 +3,7 @@ suppressPackageStartupMessages({
   library(monocle3)
   library(pbmcapply)
   library(scuttle)
-  library(dplyr)
+  library(tidyverse)
   library(igraph)
 })
 
@@ -83,7 +83,7 @@ local_result_list_kegg <- pbmcapply::pbmclapply(c(1:nrow(gmt)), function(i,
         tryCatch(
           expr = {
             pca_local <- prcomp(sub_x,
-              scale = FALSE,
+              scale = TRUE,
               center = TRUE,
               rank. = 10
             )
@@ -116,20 +116,8 @@ local_result_list_kegg <- pbmcapply::pbmclapply(c(1:nrow(gmt)), function(i,
 }, mc.cores = 8, ignore.interactive = T)
 
 ## Remove any null value list
-local_result_list_kegg <- local_result_list_kegg[sapply(local_result_list_kegg, function(x) !is.null(x))]
-names(local_result_list_kegg) <- lapply(local_result_list_kegg, function(x) x$path_id)
-
-## Pathways Metagenes
-metagene_detected_40 <- lapply(local_result_list_kegg, function(x) {
-  if (x$variance_explained[1] >= 30) {
-    return(x)
-  } else {
-    return(NULL)
-  }
-})
-## Remove null
-metagene_detected_40 <- metagene_detected_40[sapply(metagene_detected_40, function(x) !is.null(x))]
-length(metagene_detected_40)
+metagene_detected_40 <- local_result_list_kegg[sapply(local_result_list_kegg, function(x) !is.null(x))]
+names(metagene_detected_40) <- lapply(metagene_detected_40, function(x) x$path_id)
 
 ## Extract Cell-Vertex df
 g <- principal_graph(cds)$UMAP
@@ -210,7 +198,7 @@ write.table(node_df_s3,
 saveRDS(edge_list_s3, file = "inst/app/www/data/edge_list_s3.RDS")
 
 ## Export Norm Counts
-norm_counts_s3 <- norm_counts_s3 %>%
+norm_counts_s3 <- log1p(counts) %>%
   as.data.frame() %>%
   rownames_to_column(var = "gene")
 norm_counts_s3 <- as.data.frame(t(norm_counts_s3))
@@ -255,11 +243,11 @@ write.table(metagene_df_gene_level,
 # PC info extract "variance_explained", "sd", "path_id"
 pc_info <- lapply(metagene_s3, function(x) {
   return(data.frame(
-    path_id = rep(x$path_id, length(x$variance_explained)),
-    pc = paste0("PC", 1:length(x$variance_explained)),
-    variance_explained = x$variance_explained,
-    sd = x$sd,
-    cum_var = x$cum_var
+    path_id = rep(x$path_id, length(x$variance_explained[c(1:10)])),
+    pc = paste0("PC", 1:length(x$variance_explained[c(1:10)])),
+    variance_explained = x$variance_explained[c(1:10)],
+    sd = x$sd[c(1:10)],
+    cum_var = x$cum_var[c(1:10)]
   ))
 })
 pc_info <- do.call(rbind, pc_info)

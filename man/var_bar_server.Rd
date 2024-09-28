@@ -10,10 +10,8 @@ var_bar_server(
   x_col,
   y_col,
   sd_col = NULL,
-  main_title,
   x_label = NULL,
   y_label = NULL,
-  sub_title = NULL,
   type = "column"
 )
 }
@@ -29,13 +27,9 @@ UI and server components from others within a Shiny application.}
 
 \item{sd_col}{The column name for the standard deviation values.}
 
-\item{main_title}{The main title of the plot.}
-
 \item{x_label}{The label for the x-axis. Defaults to NULL.}
 
 \item{y_label}{The label for the y-axis. Defaults to NULL.}
-
-\item{sub_title}{An optional subtitle for the plot. Defaults to NULL.}
 
 \item{type}{The type of plot to render. Defaults to "column".}
 }
