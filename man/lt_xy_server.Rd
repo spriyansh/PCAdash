@@ -6,54 +6,41 @@
 \usage{
 lt_xy_server(
   id,
-  x,
-  y,
-  pTime,
-  main_title,
-  x_label = NULL,
-  y_label = NULL,
-  sub_title = NULL,
-  catgeory = NULL,
-  cell_stroke = reactive(0.5),
-  cell_size = reactive(2),
-  cell_alpha = reactive(0.6),
-  color_type = "contnious"
+  df,
+  x_col,
+  y_col,
+  grp_col,
+  node_df,
+  node_x_col,
+  node_y_col,
+  edge_list,
+  x_label = "UMAP-1",
+  y_label = "UMAP-2"
 )
 }
 \arguments{
-\item{id}{A unique identifier for the module, used to distinguish this module's
-UI and server components from others within a Shiny application.}
+\item{id}{A unique identifier for the module.}
 
-\item{x}{A numeric vector representing the x-axis data.}
+\item{df}{A reactive expression that returns a data frame containing the data to be plotted.}
 
-\item{y}{A numeric vector representing the y-axis data.}
+\item{x_col}{The column name for the x-axis.}
 
-\item{pTime}{A numeric or datetime vector representing the progression or time data,
-used for color mapping when \code{color_type} is set to "continuous".}
+\item{y_col}{The column name for the y-axis.}
 
-\item{main_title}{The main title of the plot.}
+\item{grp_col}{The column name for the grouping variable.}
+
+\item{node_df}{A reactive expression that returns a data frame containing the node data.}
+
+\item{node_x_col}{The column name for the x-axis of the node data.}
+
+\item{node_y_col}{The column name for the y-axis of the node data.}
+
+\item{edge_list}{A reactive expression that returns a list of edge data.}
 
 \item{x_label}{The label for the x-axis. Defaults to NULL.}
 
 \item{y_label}{The label for the y-axis. Defaults to NULL.}
-
-\item{sub_title}{An optional subtitle for the plot. Defaults to NULL.}
-
-\item{catgeory}{A factor or character vector used for color mapping when \code{color_type}
-is set to "discrete". Defaults to NULL.}
-
-\item{cell_stroke}{The stroke width of the points. Defaults to 0.5.}
-
-\item{cell_size}{The size of the points. Defaults to 2.}
-
-\item{cell_alpha}{The transparency level of the points. Defaults to 0.6.}
-
-\item{color_type}{A string specifying the type of color mapping. Options are "continuous"
-(default) for mapping \code{pTime} to colors, or "discrete" for mapping \code{catgeory} to colors.}
 }
 \description{
-A Shiny server module that renders a ggplot2-based scatter plot to visualize
-longitudinal data over time, with options for continuous or discrete color scaling.
-This module supports customization of plot aesthetics such as point size, stroke,
-and transparency, along with titles and axis labels.
+A Shiny server module that renders a ggplot2-based scatter plot.
 }

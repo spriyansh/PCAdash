@@ -5,138 +5,195 @@
 #'
 #' @param id A unique identifier for the module.
 #'
-#'
 #' @export
 var_bar_ui <- function(id) {
   ns <- NS(id)
-  plotOutput(outputId = ns("var_bar"))
+  highcharter::highchartOutput(outputId = ns("var_bar"))
 }
 
 #' @title Variance Bar Plot Server Module
 #'
-#' @description
-#' A Shiny server module that renders a ggplot2-based bar plot representing the variance
-#' explained by each principal component (PC). This module supports customization options
-#' for titles, axis labels, and aesthetics such as bar width and transparency.
-#'
 #' @param id A unique identifier for the module, used to distinguish this module's
 #' UI and server components from others within a Shiny application.
-#' @param var_per_pc A numeric vector representing the variance explained by each
-#' principal component (PC).
-#' @param sd A numeric vector representing the standard deviation associated with
-#' each principal component's variance.
-#' @param n_bar The number of bars to display in the plot. Defaults to 5.
-#' @param main_title The main title of the plot.
+#' @param df A reactive expression that returns a data frame containing the data to be plotted.
+#' @param x_col The column name for the x-axis.
+#' @param y_col The column name for the y-axis.
+#' @param sd_col The column name for the standard deviation values.
 #' @param x_label The label for the x-axis. Defaults to NULL.
 #' @param y_label The label for the y-axis. Defaults to NULL.
-#' @param sub_title An optional subtitle for the plot. Defaults to NULL.
-#' @param bin_width The width of the bars in the plot. Defaults to 0.5.
-#' @param bar_alpha The transparency level of the bars. Defaults to 0.7.
-#' @param polar_cord A logical value indicating whether to use polar coordinates for the plot. Defaults to FALSE.
-#' @param activate_legend A logical value indicating whether to activate the legend. Defaults to FALSE.
+#' @param type The type of plot to render. Defaults to "column".
 #'
 #' @export
 var_bar_server <- function(id,
-                           var_per_pc,
-                           sd,
-                           n_bar = reactive(5),
-                           main_title,
+                           df,
+                           x_col,
+                           y_col,
+                           sd_col = NULL,
                            x_label = NULL,
                            y_label = NULL,
-                           sub_title = NULL,
-                           bin_width = reactive(0.5),
-                           bar_alpha = reactive(0.7),
-                           polar_cord = FALSE,
-                           activate_legend = reactive(FALSE)) {
+                           type = "column") {
   moduleServer(
     id = id,
     module = function(input, output, session) {
-      dicrete_cell_color <- "dicrete_cell_color"
-      df <- reactive({
-        if (polar_cord) {
-          x <- names(var_per_pc())
-        } else {
-          x <- paste0("PC", 1:length(var_per_pc()))
-        }
-        percent_var <- (var_per_pc() / sum(var_per_pc())) * 100
-
-        df <- data.frame(
-          percent_var = percent_var,
-          x = x,
-          sd = sd(),
-          var_per_pc = var_per_pc()
-        )
-        return(df)
-      })
-
       # Render a plot
-      output$var_bar <- renderPlot({
-        # Bar plot for Variance
-        p <- ggplot() +
-          labs(
-            title = main_title,
-            subtitle = sub_title,
-            x = x_label,
-            y = y_label
-          ) +
-          black_theme(activate = activate_legend())
-
-        if (polar_cord) {
-          p <- p +
-            geom_bar(
-              data = df()[c(1:n_bar()), , drop = FALSE],
-              aes(x = x, y = var_per_pc, fill = var_per_pc > 0),
-              stat = "identity", color = "#f98e09",
-              width = bin_width(), alpha = bar_alpha()
-            ) +
-            geom_text(
-              data = df()[c(1:n_bar()), , drop = FALSE],
-              aes(
-                x = x, y = var_per_pc,
-                label = round(var_per_pc, 1)
-              ), vjust = ifelse(df()[c(1:n_bar()), , drop = FALSE]$var_per_pc >= 0, -0.5, 1.5), size = 5,
-              color = "#fcffa4"
-            ) +
-            scale_fill_manual(values = c("#21918c", "#f98e09")) +
-            theme(
-              axis.line.x = element_blank(),
-              axis.line.y = element_blank(),
-              axis.text.y = element_blank(),
-              axis.ticks = element_blank(),
-              axis.text.x = element_text(
-                colour = "white", size = rel(1)
+      output$var_bar <- highcharter::renderHighchart({
+        if (type == "column") {
+          highcharter::hchart(
+            object = df(),
+            type = "column",
+            highcharter::hcaes(x = .data[[x_col]], y = .data[[y_col]]),
+          ) %>%
+            highcharter::hc_add_series(
+              df(),
+              "errorbar",
+              highcharter::hcaes(x = .data[[x_col]], y = .data[[y_col]], low = .data[[y_col]] - .data[[sd_col]], high = .data[[y_col]] + .data[[sd_col]]),
+              enableMouseTracking = TRUE,
+              showInLegend = FALSE
+            ) %>%
+            highcharter::hc_plotOptions(
+              errorbar = list(
+                color = "#fde725",
+                stemWidth = 1
               ),
-              legend.position = "none"
-            ) +
-            coord_flip() +
-            xlab("") + ylab("") + theme_void() + black_theme(
-              activate = activate_legend()
+              column = list(
+                color = "#21918c",
+                borderColor = "#f98e09"
+              )
+            ) %>%
+            # highcharter::hc_title(text = main_title) %>%
+            # highcharter::hc_subtitle(text = main_title) %>%
+            highcharter::hc_xAxis(
+              title = list(
+                text = x_label,
+                style = list(color = "white")
+              ),
+              lineColor = "white",
+              lineWidth = 2,
+              gridLineWidth = 0,
+              labels = list(style = list(color = "white"))
+            ) %>%
+            highcharter::hc_yAxis(
+              title = list(
+                text = y_label,
+                style = list(color = "white")
+              ),
+              lineColor = "white",
+              lineWidth = 2,
+              gridLineWidth = 0,
+              labels = list(style = list(color = "white"))
+            ) %>%
+            highcharter::hc_legend(enabled = TRUE) %>%
+            highcharter::hc_add_theme(
+              highcharter::hc_theme(
+                line = list(
+                  color = "white"
+                ),
+                chart = list(
+                  backgroundColor = "#222222"
+                ),
+                # Remove colors from the theme to prevent overriding
+                # colors = colors,
+                title = list(
+                  style = list(
+                    color = "white",
+                    fontFamily = "Times",
+                    fontSize = "25px"
+                  )
+                ),
+                subtitle = list(
+                  style = list(
+                    color = "white",
+                    fontFamily = "Times",
+                    fontSize = "15px"
+                  )
+                ),
+                legend = list(
+                  itemStyle = list(
+                    fontFamily = "Times",
+                    color = "white"
+                  ),
+                  itemHoverStyle = list(
+                    color = "yellow"
+                  )
+                )
+              )
             )
-          return(p)
-        } else {
-          p <- p +
-            geom_bar(
-              data = df()[c(1:n_bar()), , drop = FALSE],
-              aes(x = factor(x, levels = paste0("PC", sort(as.numeric(gsub("PC", "", x))))), y = var_per_pc),
-              stat = "identity", fill = "#21918c", color = "#f98e09",
-              width = bin_width(), alpha = bar_alpha()
-            ) +
-            geom_errorbar(
-              data = df()[c(1:n_bar()), , drop = FALSE],
-              aes(
-                x = x, y = var_per_pc,
-                ymin = var_per_pc - sd, ymax = var_per_pc + sd
-              ), width = 0.3,
-              alpha = 1, color = "#fde725", linetype = "dotted"
-            ) + geom_text(
-              data = df()[c(1:n_bar()), , drop = FALSE],
-              aes(
-                x = x, y = var_per_pc,
-                label = paste0(round(percent_var, 2), "%")
-              ), vjust = -5,
-              color = "#fcffa4"
+        } else if (type == "bar") {
+          # Create a vector of colors based on the loading_col values
+          colors <- ifelse(df()[[y_col]] > 0, "seagreen", "hotpink") # seagreen for positive, brown for negative
+
+          # Create the bar chart with conditional coloring
+          hcp <- highcharter::hchart(
+            object = df(),
+            type = "bar",
+            highcharter::hcaes(x = .data[[x_col]], y = .data[[y_col]])
+          ) %>%
+            highcharter::hc_colors(colors) %>% # Apply the colors vector
+            highcharter::hc_plotOptions(
+              bar = list(
+                colorByPoint = TRUE, # Enable coloring by point
+                borderColor = "gold",
+                opacity = 0.9
+              )
+            ) %>%
+            # highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
+            # highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
+            highcharter::hc_xAxis(
+              title = list(
+                text = x_label,
+                style = list(color = "white")
+              ),
+              lineColor = "white",
+              lineWidth = 2,
+              gridLineWidth = 0,
+              labels = list(style = list(color = "white"))
+            ) %>%
+            highcharter::hc_yAxis(
+              title = list(
+                text = y_label,
+                style = list(color = "white")
+              ),
+              lineColor = "white",
+              lineWidth = 2,
+              gridLineWidth = 0,
+              labels = list(style = list(color = "white"))
+            ) %>%
+            highcharter::hc_legend(enabled = FALSE) %>% # Disable legend if not needed
+            highcharter::hc_add_theme(
+              highcharter::hc_theme(
+                line = list(
+                  color = "white"
+                ),
+                chart = list(
+                  backgroundColor = "#222222"
+                ),
+                title = list(
+                  style = list(
+                    color = "white",
+                    fontFamily = "Times",
+                    fontSize = "25px"
+                  )
+                ),
+                subtitle = list(
+                  style = list(
+                    color = "white",
+                    fontFamily = "Times",
+                    fontSize = "15px"
+                  )
+                ),
+                legend = list(
+                  itemStyle = list(
+                    fontFamily = "Times",
+                    color = "white"
+                  ),
+                  itemHoverStyle = list(
+                    color = "yellow"
+                  )
+                )
+              )
             )
-          return(p)
+
+          return(hcp)
         }
       })
     }

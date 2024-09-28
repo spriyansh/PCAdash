@@ -1,110 +1,127 @@
-shiny::navbarPage(
+bslib::page_fluid(
   title = "PCAdash",
   theme = shinythemes::shinytheme("darkly"),
   lang = "en",
-  tabPanel(
-    "Metagenes",
-    fluidRow(column(8, offset = 2, h3("Inference Pathway Activity in Pseudotime"))),
-    fluidRow(column(8, offset = 2, h4("Rationale"))),
-    fluidRow(column(8, offset = 2, p("Cell fate decisions are pivotal in cellular development, differentiation, and disease progression. Traditional gene-centric trajectory inference tools often overlook the complexity of cellular functions, which are driven not just by individual genes but by coordinated interactions within pathways. Given the interconnected nature of these processes, it is essential to move beyond simple gene lists and assess how entire pathways evolve over Pseudotime. Pathway metagenes introduces an innovative approach to capture these changes by representing pathway activity as Metagenes in Pseudotime. By leveraging both pathway and trajectory data, our approach evaluates how pathway activity fluctuates across Pseudotime, providing a more holistic view of cellular dynamics.",
-      style = "text-align: justify;"
-    ))),
-    fluidRow(column(8, offset = 2, h4("Workflow for Pathway Metagene Inference"))),
-    fluidRow(
-      column(6, offset = 3, networkD3::sankeyNetworkOutput("sankey_workflow"))
-    ),
-    fluidRow(
-      column(8, offset = 2, p("The workflow above illustrates the steps involved in inferring pathway activity over Pseudotime:"))
-    ),
-    fluidRow(column(8, offset = 2, HTML("<ul>
-  <li>Starting from raw counts, the data is normalized and subsetted based on a gene set of interest.</li>
-  <li>The subsetted data is then used to infer pseudotime using Monocle3.</li>
-  <li>The gene sets are taken from publicly available knowledge bases, such as KEGG.</li>
-  <li>For each gene set, the processed count table is subsetted accordingly.</li>
-  <li>An independent principal component analysis (PCA) is performed for each gene set using a correlation-based approach.</li>
-  <li>Principal components with the highest captured variance, exceeding a specified threshold, are referred to as 'metagenes.'</li>
-  <li>The inferred pseudotime from Monocle3, after trajectory inference, is transferred to the metagenes.</li>
-  <li>This allows for the visualization of metagene behavior in pseudotime, helping to infer how pathway behavior is coordinated during changes in cell states.</li>
-</ul>"))),
-    hr(), # Footer
-    tags$footer(
-      style = "background-color: #222222; color: white; padding: 10px; position: relative; bottom: 0; width: 100%;",
-      shiny::div(
-        style = "display: flex; justify-content: space-between;",
-        shiny::div(
-          style = "text-align: left;",
-          shiny::HTML("&copy; 2024 Priyansh Srivastava")
-        ),
-        shiny::div(
-          style = "text-align: right;",
-          shiny::HTML("Contact: <a href='https://www.priyansh-efolio.in/'>priyansh-efolio.in</a>")
+  fluidRow(column(8, offset = 2, h3("Pathway Activity Inference in Pseudotime"))),
+  fluidRow(column(8, offset = 2, h4("Rationale"))),
+  fluidRow(column(8, offset = 2, p("Cell fate decisions are pivotal in cellular development, differentiation, and disease progression. Traditional gene-centric trajectory inference tools often overlook the complexity of cellular functions, which are driven not just by individual genes but by coordinated interactions within pathways. Given the interconnected nature of these processes, it is essential to move beyond simple gene lists and assess how entire pathways evolve over Pseudotime. Pathway metagenes introduces an innovative approach to capture these changes by representing pathway activity as Metagenes in Pseudotime. By leveraging both pathway and trajectory data, our approach evaluates how pathway activity fluctuates across Pseudotime, providing a more holistic view of cellular dynamics.",
+    style = "text-align: justify;"
+  ))),
+  fluidRow(column(8, offset = 2, h4("Workflow for Pathway Metagene Inference"))),
+  fluidRow(
+    column(6, offset = 3, highcharter::highchartOutput("sankey_workflow") %>% shinycssloaders::withSpinner())
+  ),
+  fluidRow(
+    column(8, offset = 2, p("The workflow above illustrates the steps involved in inferring pathway activity over Pseudotime:"))
+  ),
+  fluidRow(column(8, offset = 2, HTML("<ul>
+    <li>Starting from raw counts, the data is normalized and subsetted based on a gene set of interest.</li>
+    <li>The subsetted data is then used to infer pseudotime using Monocle3.</li>
+    <li>The gene sets are taken from publicly available knowledge bases, such as KEGG.</li>
+    <li>For each gene set, the processed count table is subsetted accordingly.</li>
+    <li>An independent principal component analysis (PCA) is performed for each gene set using a correlation-based approach.</li>
+    <li>Principal components with the highest captured variance, exceeding a specified threshold, are referred to as 'metagenes.'</li>
+    <li>The inferred pseudotime from Monocle3, after trajectory inference, is transferred to the metagenes.</li>
+    <li>This allows for the visualization of metagene behavior in pseudotime, helping to infer how pathway behavior is coordinated during changes in cell states.</li>
+  </ul>"))),
+  fluidRow(shiny::column(4, offset = 4, lt_xy_ui("latent_plot") %>% shinycssloaders::withSpinner())),
+  fluidRow(column(8, offset = 2, hr())),
+  ## Variance bar plot
+  fluidRow(
+    column(8,
+      offset = 2,
+      fluidRow(
+        column(6, offset = 0, var_bar_ui("variance_bar") %>% shinycssloaders::withSpinner()),
+        column(6,
+          offset = 0, h4("Explained Variance"), p("Each principal component (PC) is responsible for orthogonally separating the variance in the data. PCA decomposes the data matrix into scores and loadings, transforming the original features into a new set of uncorrelated variables ordered by the amount of variance they explain. The total number of PCs is equal to the rank of the data matrix. In a typical scree plot, the eigenvalues—representing the variance captured by each PC—are plotted against the PCs. PC1 has the highest eigenvalue because it captures the most variance. The plot on the left extends the scree plot by showing the proportion of variance captured on the y-axis and the first 10 PCs on the x-axis.", style = "text-align: justify;"),
+          p("In the PCA-Metagene workflow, each PC can be considered a metagene. However, for downstream analysis, we retain only the PCs that capture a substantial amount of variance. Select a pathway from the drop-down list below, and the plot will update to show the proportion of captured variance for first 10 PCs, ideally PC1 and PC2 are considered as metagenes.", style = "text-align: justify;"),
+          shiny::selectInput(
+            inputId = "pathway_select_var_bar",
+            label = NULL,
+            choices = NULL
+          )
         )
+      ),
+      hr()
+    )
+  ),
+  fluidRow(
+    column(8,
+      offset = 2,
+      fluidRow(
+        column(6,
+          offset = 0, h4("Metagene in Pseudotime"), p("Once we have identified the principal components (PCs) with the highest explained variance, we map the score matrix to pseudotime. Instead of examining the behavior of pathways from a gene-centric view, a metagene—which is a PC capturing a substantial amount of variance—allows us to study the collective behaviors of genes in a pathway in a summarized manner. The plot on the right shows how the dynamics of a particular pathway change as the cell differentiates from stem cells to erythrocyte progenitor cells. We visualize this trend using a cubic regression spline with six knots.", style = "text-align: justify;"),
+          p("You can select a pathway from the drop-down list below, and the plot will update to show the PC1 metagene in pseudotime.", style = "text-align: justify;"),
+          shiny::selectInput(
+            inputId = "pathway_select_metagene",
+            label = NULL,
+            choices = NULL
+          )
+        ),
+        column(6, offset = 0, ts_xy_ui("metagene") %>% shinycssloaders::withSpinner())
+      ),
+      hr()
+    )
+  ),
+  fluidRow(
+    column(8,
+      offset = 2,
+      fluidRow(
+        column(6, offset = 0, var_bar_ui("polar_bar") %>% shinycssloaders::withSpinner()),
+        column(6,
+          offset = 0, h4("Loadings"), p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod. Pellentesque diam volutpat; nostra risus a ultricies orci etiam dignissim. Vestibulum volutpat feugiat tempor potenti scelerisque fusce facilisi. Sit condimentum augue vehicula senectus consequat porta lacinia. Euismod odio phasellus nostra luctus potenti tempus quisque.", style = "text-align: justify;"),
+          p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod quisque.", style = "text-align: justify;"),
+          shiny::selectInput(
+            inputId = "pathway_select_loading",
+            label = "Choose a Pathway:",
+            choices = NULL
+          )
+        )
+      ),
+      hr()
+    )
+  ),
+  fluidRow(
+    column(8,
+      offset = 2,
+      fluidRow(
+        column(6,
+          offset = 0, h4("Contributing Genes"), p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod. Pellentesque diam volutpat; nostra risus a ultricies orci etiam dignissim. Vestibulum volutpat feugiat tempor potenti scelerisque fusce facilisi. Sit condimentum augue vehicula senectus consequat porta lacinia. Euismod odio phasellus nostra luctus potenti tempus quisque.", style = "text-align: justify;"),
+          p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod quisque.", style = "text-align: justify;"),
+          column(
+            6,
+            shiny::selectInput(
+              inputId = "pathway_select_contri_gene",
+              label = "Choose a Pathway:",
+              choices = NULL
+            )
+          ),
+          column(
+            6,
+            shiny::selectInput(
+              inputId = "gene_select",
+              label = "Choose a gene:",
+              choices = NULL
+            )
+          )
+        ),
+        column(6, offset = 0, ts_xy_ui("contri_single") %>% shinycssloaders::withSpinner())
       )
     )
   ),
-  tabPanel(
-    "Visualise",
-    shiny::sidebarLayout(
-      shiny::sidebarPanel(
-        shiny::h2("Control Panel"),
-        br(),
-        shiny::selectInput(
-          inputId = "pathway_select",
-          label = "Choose a Pathway:",
-          choices = NULL
-        ),
-        shiny::selectInput(
-          inputId = "gene_select",
-          label = "Choose a gene:",
-          choices = NULL
-        ),
-        hr(),
-        shiny::selectInput(
-          inputId = "plot_select",
-          label = "Choose a Plot",
-          choices = list(
-            "Metagene Over Pseudotime" = "metagene",
-            "Variance per PC" = "variance_bar",
-            "t-SNE Plot" = "latent_plot",
-            "Contributing Genes" = "contri_features",
-            "Single Contributing Genes" = "contri_features_single",
-            "Loadings" = "variance_polar"
-          )
-        ),
-        hr(),
-        shiny::h4("Adjust Visuals "),
-        uiOutput("dynamic_vis_params_ui"),
-        width = 3
-      ),
-      shiny::mainPanel(
-        width = 9,
-        shiny::fluidRow(
-          shiny::column(4, var_bar_ui("variance_bar")),
-          shiny::column(4, ts_xy_ui("metagene")),
-          shiny::column(4, lt_xy_ui("latent_plot")),
-        ),
-        hr(),
-        shiny::fluidRow(
-          shiny::column(4, multi_ts_xy_ui("contri_genes")),
-          shiny::column(4, ts_xy_ui("contri_single")),
-          shiny::column(4, var_bar_ui("polar_bar"))
-        )
-      )
-    ),
-    hr(),
-    # Footer
-    tags$footer(
-      style = "background-color: #222222; color: white; padding: 10px; position: relative; bottom: 0; width: 100%;",
+  hr(),
+  # Footer
+  tags$footer(
+    style = "background-color: #222222; color: white; padding: 5px; position: relative; bottom: 0; width: 100%;",
+    shiny::div(
+      style = "display: flex; justify-content: space-between;",
       shiny::div(
-        style = "display: flex; justify-content: space-between;",
-        shiny::div(
-          style = "text-align: left;",
-          shiny::HTML("&copy; 2024 Priyansh Srivastava")
-        ),
-        shiny::div(
-          style = "text-align: right;",
-          shiny::HTML("Contact: <a href='https://www.priyansh-efolio.in/'>priyansh-efolio.in</a>")
-        )
+        style = "text-align: left;",
+        shiny::HTML("&copy; 2024 Priyansh Srivastava")
+      ),
+      shiny::div(
+        style = "text-align: right;",
+        shiny::HTML("Contact: <a href='https://www.priyansh-efolio.in/'>priyansh-efolio.in</a>")
       )
     )
   )
