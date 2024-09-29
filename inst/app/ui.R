@@ -4,7 +4,10 @@ bslib::page_fluid(
   lang = "en",
   fluidRow(column(8, offset = 2, h3("Pathway Activity Inference in Pseudotime"))),
   fluidRow(column(8, offset = 2, h4("Rationale"))),
-  fluidRow(column(8, offset = 2, p("Cell fate decisions are pivotal in cellular development, differentiation, and disease progression. Traditional gene-centric trajectory inference tools often overlook the complexity of cellular functions, which are driven not just by individual genes but by coordinated interactions within pathways. Given the interconnected nature of these processes, it is essential to move beyond simple gene lists and assess how entire pathways evolve over Pseudotime. Pathway metagenes introduces an innovative approach to capture these changes by representing pathway activity as Metagenes in Pseudotime. By leveraging both pathway and trajectory data, our approach evaluates how pathway activity fluctuates across Pseudotime, providing a more holistic view of cellular dynamics.",
+  fluidRow(column(8, offset = 2, p("Cell fate decisions are pivotal in cellular development, differentiation, and disease progression. Traditional gene-centric trajectory inference tools often overlook the complexity of cellular functions, which are driven not just by individual genes but by coordinated interactions within pathways. Given the interconnected nature of these processes, it is essential to move beyond simple gene lists and assess how entire pathways evolve over Pseudotime. Pathway metagenes introduces an innovative approach to capture these changes by representing pathway activity as Metagenes in Pseudotime. By leveraging both pathway and trajectory data, this approach evaluates how pathway activity fluctuates across Pseudotime, providing a more holistic view of cellular dynamics.",
+    style = "text-align: justify;"
+  ))),
+  fluidRow(column(8, offset = 2, p("Pseudotime is a metric representing cell's progression through some biological process, relative to a reference cell. It serves as a proxy for developmental time.",
     style = "text-align: justify;"
   ))),
   fluidRow(column(8, offset = 2, h4("Workflow for Pathway Metagene Inference"))),
@@ -33,7 +36,7 @@ bslib::page_fluid(
       fluidRow(
         column(6, offset = 0, var_bar_ui("variance_bar") %>% shinycssloaders::withSpinner()),
         column(6,
-          offset = 0, h4("Explained Variance"), p("Each principal component (PC) is responsible for orthogonally separating the variance in the data. PCA decomposes the data matrix into scores and loadings, transforming the original features into a new set of uncorrelated variables ordered by the amount of variance they explain. The total number of PCs is equal to the rank of the data matrix. In a typical scree plot, the eigenvalues—representing the variance captured by each PC—are plotted against the PCs. PC1 has the highest eigenvalue because it captures the most variance. The plot on the left extends the scree plot by showing the proportion of variance captured on the y-axis and the first 10 PCs on the x-axis.", style = "text-align: justify;"),
+          offset = 0, h4("Explained Variance"), p("In a typical scree plot, the eigenvalues-representing the variance captured by each PC-are plotted against the PCs. The plot on the left extends the scree plot by showing the proportion of variance captured on the y-axis and the first 10 PCs on the x-axis.", style = "text-align: justify;"),
           p("In the PCA-Metagene workflow, each PC can be considered a metagene. However, for downstream analysis, we retain only the PCs that capture a substantial amount of variance. Select a pathway from the drop-down list below, and the plot will update to show the proportion of captured variance for first 10 PCs, ideally PC1 and PC2 are considered as metagenes.", style = "text-align: justify;"),
           shiny::selectInput(
             inputId = "pathway_select_var_bar",
@@ -54,7 +57,7 @@ bslib::page_fluid(
           p("You can select a pathway from the drop-down list below, and the plot will update to show the PC1 metagene in pseudotime.", style = "text-align: justify;"),
           shiny::selectInput(
             inputId = "pathway_select_metagene",
-            label = NULL,
+            label =  "Choose a Pathway:",
             choices = NULL
           )
         ),
@@ -69,11 +72,11 @@ bslib::page_fluid(
       fluidRow(
         column(6, offset = 0, var_bar_ui("polar_bar") %>% shinycssloaders::withSpinner()),
         column(6,
-          offset = 0, h4("Loadings"), p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod. Pellentesque diam volutpat; nostra risus a ultricies orci etiam dignissim. Vestibulum volutpat feugiat tempor potenti scelerisque fusce facilisi. Sit condimentum augue vehicula senectus consequat porta lacinia. Euismod odio phasellus nostra luctus potenti tempus quisque.", style = "text-align: justify;"),
-          p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod quisque.", style = "text-align: justify;"),
+          offset = 0, h4("Loadings"), p("Loadings indicate how each feature affects the principal components. In our case, the features are genes, so each loading corresponds to a gene within a particular pathway. For simplicity, we're showing only the loadings of the first principal component here. The magnitude of each loading tells us how strongly a particular gene is correlated with the principal component.", style = "text-align: justify;"),
+          p("Select a pathway from the drop-down list below, and the plot will update to show the loadings of the selected metagene (PC1).", style = "text-align: justify;"),
           shiny::selectInput(
             inputId = "pathway_select_loading",
-            label = "Choose a Pathway:",
+            label =  "Choose a Pathway:",
             choices = NULL
           )
         )
@@ -86,8 +89,8 @@ bslib::page_fluid(
       offset = 2,
       fluidRow(
         column(6,
-          offset = 0, h4("Contributing Genes"), p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod. Pellentesque diam volutpat; nostra risus a ultricies orci etiam dignissim. Vestibulum volutpat feugiat tempor potenti scelerisque fusce facilisi. Sit condimentum augue vehicula senectus consequat porta lacinia. Euismod odio phasellus nostra luctus potenti tempus quisque.", style = "text-align: justify;"),
-          p("Lorem ipsum odor amet, consectetuer adipiscing elit. Egestas netus turpis volutpat ipsum est tincidunt ut. Lacus turpis molestie litora convallis iaculis faucibus ridiculus etiam euismod quisque.", style = "text-align: justify;"),
+          offset = 0, h4("Contributing Genes"), p("Although the metagene effectively summarizes the overall expression of the pathway gene set, it is still important to examine the expression of individual genes over pseudotime. Doing so helps us better understand which genes have a greater influence on the inferred metagene.", style = "text-align: justify;"),
+          p("Select a pathway from the drop-down list, and then choose one of the genes within that pathway. The plot will update to show the expression trend of the selected gene over pseudotime. By comparing this trend with the gene's loading values in the principal component, we can assess how much impact that particular gene has on the metagene. This helps us understand which specific genes are contributing most to the patterns observed in the metagene.", style = "text-align: justify;"),
           column(
             6,
             shiny::selectInput(

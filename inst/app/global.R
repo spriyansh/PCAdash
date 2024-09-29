@@ -5,6 +5,13 @@ suppressPackageStartupMessages({
   library(promises)
 })
 
+## Main plot color
+eryth_linear_hspc_colors <- c(
+  "EEPs" = "skyblue",
+  "MEPs" = "hotpink",
+  "HSCs" = "limegreen"
+)
+
 #
 # options(shiny.autoreload = TRUE)
 # shiny::runApp(
