@@ -10,7 +10,7 @@
 
 ### Introduction
 <p align="justify" style="text-indent: 20px;">
-`PCAdash` is an R-shiny application designed to visualize the results of PCA-Metagenes at single-cell resolution. The app follows a black theme and consists of two pages: the results page and the documentation page.
+`PCAdash` is an R-shiny application designed to visualize the results of PCA-Metagenes at single-cell resolution.
 </p>
 
 <p align="justify" style="text-indent: 20px;">
@@ -21,7 +21,7 @@
 
 ### Motivation
 <p align="justify" style="text-indent: 20px;">
-I designed this application to present some of the work from my PhD project on PCA-Metagene inference and now it acts as one of my showcase project. Metagenes serve as summaries of gene sets (pathways) and illustrate the coordinated expression of genes within a particular set. This app was initially developed during the early years of my PhD program and later revamped to be more user-friendly and interactive. While most improvements focus on development and deployment, the introduction of a black theme is also a significant feature. Please refer to the documentation for more information about the app.
+Cell fate decisions are pivotal in cellular development, differentiation, and disease progression. Traditional gene-centric trajectory inference tools often overlook the complexity of cellular functions, which are driven not just by individual genes but by coordinated interactions within pathways. Given the interconnected nature of these processes, it is essential to move beyond simple gene lists and assess how entire pathways evolve over Pseudotime. Our work introduces an innovative approach to capture these changes by representing pathway activity as Metagenes in Pseudotime. By leveraging both pathway and trajectory data, this approach evaluates how pathway activity fluctuates across Pseudotime, providing a more holistic view of cellular dynamics.
 </p>
 
 ---
