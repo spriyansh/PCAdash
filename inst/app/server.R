@@ -112,7 +112,7 @@ function(input, output, session) {
       df = cell_data,
       x_col = "UMAP1",
       y_col = "UMAP2",
-      grp_col = "cell_type",
+      grp_col = "cell_type_id",
       node_df = node_data,
       node_y_col = "y",
       node_x_col = "x",
@@ -206,9 +206,19 @@ function(input, output, session) {
       stringsAsFactors = TRUE,
       select = 2
     )
+    cell_type <- data.table::fread(
+      file = "www/data/cell_data_s3.txt",
+      sep = "\t", header = TRUE, data.table = FALSE,
+      stringsAsFactors = TRUE,
+      select = 6
+    )
+
 
     # Compute Smoother
-    metagene_ts <- data.frame(pseudotime = pseudotime[, 1], metagene = metagene_vals[, 1])
+    metagene_ts <- data.frame(
+      pseudotime = pseudotime[, 1], metagene = metagene_vals[, 1],
+      cell_type = cell_type[, 1]
+    )
 
     # Create Spline Cubic Regression spline
     model <- mgcv::gam(formula = metagene ~ s(pseudotime, k = 6), data = metagene_ts, method = "REML")
@@ -221,6 +231,7 @@ function(input, output, session) {
       df = reactive(metagene_ts),
       smoother_col = "smoother",
       time_col = "pseudotime",
+      grp_col = "cell_type",
       point_col = "metagene",
       x_label = "Monocle3 Pseudotime",
       y_label = "Metagene Trend"
@@ -268,9 +279,15 @@ function(input, output, session) {
       stringsAsFactors = TRUE,
       select = 2
     )
+    cell_type <- data.table::fread(
+      file = "www/data/cell_data_s3.txt",
+      sep = "\t", header = TRUE, data.table = FALSE,
+      stringsAsFactors = TRUE,
+      select = 6
+    )
 
     # Compute Smoother
-    count_ts <- data.frame(pseudotime = pseudotime[, 1], count = count_vals[, 1])
+    count_ts <- data.frame(pseudotime = pseudotime[, 1], count = count_vals[, 1], cell_type = cell_type[, 1])
 
     # Create Spline Cubic Regression spline
     model <- mgcv::gam(formula = count ~ s(pseudotime, k = 6), data = count_ts, method = "REML")
@@ -283,6 +300,7 @@ function(input, output, session) {
       smoother_col = "smoother",
       time_col = "pseudotime",
       point_col = "count",
+      grp_col = "cell_type",
       x_label = "Monocle3 Pseudotime",
       y_label = "Expression Trend"
     )
@@ -300,8 +318,7 @@ function(input, output, session) {
           dataLabels = list(
             enabled = TRUE
           )
-        ) %>%
-        highcharter::hc_title(text = "Analysis Flow Sankey Diagram")
+        )
     })
   })
 }

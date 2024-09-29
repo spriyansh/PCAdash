@@ -43,41 +43,29 @@ lt_xy_server <- function(id,
   moduleServer(
     id = id,
     module = function(input, output, session) {
-      ## Extract Cell Types
-      cell_types <- levels(df()[[grp_col]])
-
-      # Generate colors corresponding to the levels of cell_type
-      colors <- hcl.colors(length(cell_types), "Dark2")
-
       # Render a plot
       output$lt_xy <- highcharter::renderHighchart({
-        # Create the highchart object without the color aesthetic
-        highcharter::hchart(object = df(), type = "point", highcharter::hcaes(
-          x = .data[[x_col]], y = .data[[y_col]],
-          group = .data[[grp_col]]
-        )) %>%
-          highcharter::hc_plotOptions(
-            scatter = list(
-              marker = list(
-                radius = 5,
-                symbol = "circle"
-              ),
-              opacity = 0.9
+        # Create the highchart scatter plot with the proper color mapping
+        highchart() %>%
+          hc_add_series(
+            data = df(),
+            type = "scatter",
+            hcaes(
+              x = .data[[x_col]],
+              y = .data[[y_col]],
+              group = .data[[grp_col]]
             )
           ) %>%
-          # Assign colors to the groups
-          highcharter::hc_colors(colors) %>%
-          highcharter::hc_add_series(
-            name = "Trajectory Graph",
-            data = node_df(),
-            type = "scatter",
-            showInLegend = FALSE,
-            highcharter::hcaes(x = .data[[node_x_col]], y = .data[[node_y_col]]),
-            marker = list(radius = 4)
+          hc_plotOptions(
+            scatter = list(
+              marker = list(
+                radius = 2.5,
+                symbol = "circle"
+              ),
+              opacity = 1
+            )
           ) %>%
-          highcharter::hc_add_series_list(edge_list()) %>%
-          # highcharter::hc_title(text = main_title, style = list(color = "white")) %>%
-          # highcharter::hc_subtitle(text = sub_title, style = list(color = "white")) %>%
+          hc_colors(unname(eryth_linear_hspc_colors)) %>%
           highcharter::hc_xAxis(
             title = list(
               text = x_label,
@@ -101,46 +89,61 @@ lt_xy_server <- function(id,
           highcharter::hc_tooltip(
             useHTML = TRUE,
             pointFormatter = highcharter::JS("function() {
-                      return '<b>Cell ID:</b> ' + this.cell_id + '<br/>' +
-                             '<b>Cell Type ID:</b> ' + this.cell_type_id + '<br/>'}")
+                      return '<b>Pseudotime:</b> ' + this.pseudotime.toFixed(2) + '<br/>' +
+                             '<b>Cell Type:</b> ' + this.cell_type + '<br/>'}")
           ) %>%
-          highcharter::hc_legend(enabled = TRUE) %>%
-          highcharter::hc_add_theme(
-            highcharter::hc_theme(
-              line = list(
-                color = "white"
-              ),
-              chart = list(
-                backgroundColor = "#222222"
-              ),
-              # Remove colors from the theme to prevent overriding
-              # colors = colors,
-              title = list(
-                style = list(
-                  color = "white",
-                  fontFamily = "Times",
-                  fontSize = "25px"
-                )
-              ),
-              subtitle = list(
-                style = list(
-                  color = "white",
-                  fontFamily = "Times",
-                  fontSize = "15px"
-                )
-              ),
+          hc_add_theme(
+            hc_theme(
+              line = list(color = "white"),
+              chart = list(backgroundColor = "#222222"),
               legend = list(
                 itemStyle = list(
                   fontFamily = "Times",
                   color = "white"
                 ),
                 itemHoverStyle = list(
-                  color = "yellow"
+                  color = "#feff00"
                 )
               )
             )
+          ) %>%
+          highcharter::hc_add_series_list(edge_list()) %>%
+          highcharter::hc_add_series(
+            name = "Trajectory Graph",
+            data = node_df(),
+            type = "scatter",
+            showInLegend = TRUE,
+            color = "#fa013c",
+            highcharter::hcaes(x = .data[[node_x_col]], y = .data[[node_y_col]]),
+            marker = list(radius = 2.5)
           )
       })
     }
   )
 }
+#
+#
+# ## Load and fix lt plot
+# library(highcharter)
+# library(magrittr)
+#
+# # Load data
+# cell_data <- read.table("inst/app/www/data/cell_data_s3.txt", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+# node_df <- read.table("inst/app/www/data/node_df_s3.txt", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+# edge_list <- readRDS("inst/app/www/data/edge_list_s3.RDS")
+#
+# # Column definitions
+# x_col <- "UMAP1"
+# y_col <- "UMAP2"
+# grp_col <- "cell_type_id"
+# x_label <- "UMAP-1"
+# y_label <- "UMAP-2"
+# node_x_col <- "x"
+# node_y_col <- "y"
+#
+# eryth_linear_hspc_colors <- c(
+#     "EEPs" = "skyblue",
+#     "MEPs" = "hotpink",
+#     "HSCs"  = "limegreen"
+# )
+#

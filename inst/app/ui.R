@@ -7,9 +7,8 @@ bslib::page_fluid(
   fluidRow(column(8, offset = 2, p("Cell fate decisions are pivotal in cellular development, differentiation, and disease progression. Traditional gene-centric trajectory inference tools often overlook the complexity of cellular functions, which are driven not just by individual genes but by coordinated interactions within pathways. Given the interconnected nature of these processes, it is essential to move beyond simple gene lists and assess how entire pathways evolve over Pseudotime. Pathway metagenes introduces an innovative approach to capture these changes by representing pathway activity as Metagenes in Pseudotime. By leveraging both pathway and trajectory data, this approach evaluates how pathway activity fluctuates across Pseudotime, providing a more holistic view of cellular dynamics.",
     style = "text-align: justify;"
   ))),
-
   fluidRow(column(8, offset = 2, p("Pseudotime is a metric representing cell's progression through some biological process, relative to a reference cell. It serves as a proxy for developmental time.",
-                                   style = "text-align: justify;"
+    style = "text-align: justify;"
   ))),
   fluidRow(column(8, offset = 2, h4("Workflow for Pathway Metagene Inference"))),
   fluidRow(

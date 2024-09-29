@@ -10,6 +10,7 @@ ts_xy_server(
   time_col,
   smoother_col,
   point_col,
+  grp_col,
   x_label = "x_lable",
   y_label = "y_lable"
 )
@@ -24,6 +25,8 @@ ts_xy_server(
 \item{smoother_col}{The column name for the smoother variable.}
 
 \item{point_col}{The column name for the point variable.}
+
+\item{grp_col}{The column name for the grouping variable.}
 
 \item{x_label}{The label for the x-axis.}
 

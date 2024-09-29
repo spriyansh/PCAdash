@@ -154,7 +154,7 @@ edges_list <- lapply(1:nrow(edge_df), function(i) {
       list(x = edge_df$to_x[i], y = edge_df$to_y[i])
     ),
     type = "line",
-    color = "white",
+    color = "#feff00",
     lineWidth = 3,
     marker = list(enabled = FALSE),
     enableMouseTracking = FALSE,
@@ -182,7 +182,8 @@ cell_data_s3$cell_type <- as.factor(cell_data_s3$cell_type)
 cell_data_s3$cell_type_id <- as.factor(cell_data_s3$cell_type_id)
 
 ## Export Cell Metadata
-cell_data_s3 <- cell_data_s3[order(cell_data_s3$pseudotime), ]
+cell_data_s3 <- as.data.frame(cell_data_s3[order(cell_data_s3$pseudotime), ])
+# cell_data_s3[cell_data_s3$cell_type == "Early Erythroid Progenitors", "cell_type"] <- "Erythroid Progenitors"
 write.table(cell_data_s3,
   file = "inst/app/www/data/cell_data_s3.txt",
   sep = "\t", row.names = FALSE, quote = FALSE
