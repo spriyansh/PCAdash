@@ -181,8 +181,8 @@ function(input, output, session) {
     )
   })
 
-  observeEvent(input$pathway_select_metagene, {
-    req(input$pathway_select_metagene)
+  observeEvent(list(input$pathway_select_metagene, cell_data()), {
+    req(input$pathway_select_metagene, cell_data())
     # Load columns
     col_names <- data.table::fread(
       file = "www/data/metagene_matrix_s3.txt",
@@ -200,24 +200,24 @@ function(input, output, session) {
       stringsAsFactors = FALSE,
       select = idx
     )
-    pseudotime <- data.table::fread(
-      file = "www/data/cell_data_s3.txt",
-      sep = "\t", header = TRUE, data.table = FALSE,
-      stringsAsFactors = TRUE,
-      select = 2
-    )
-    cell_type <- data.table::fread(
-      file = "www/data/cell_data_s3.txt",
-      sep = "\t", header = TRUE, data.table = FALSE,
-      stringsAsFactors = TRUE,
-      select = 6
-    )
-
+    # pseudotime <- data.table::fread(
+    #   file = "www/data/cell_data_s3.txt",
+    #   sep = "\t", header = TRUE, data.table = FALSE,
+    #   stringsAsFactors = TRUE,
+    #   select = 2
+    # )
+    # cell_type <- data.table::fread(
+    #   file = "www/data/cell_data_s3.txt",
+    #   sep = "\t", header = TRUE, data.table = FALSE,
+    #   stringsAsFactors = TRUE,
+    #   select = 6
+    # )
+    #
 
     # Compute Smoother
     metagene_ts <- data.frame(
-      pseudotime = pseudotime[, 1], metagene = metagene_vals[, 1],
-      cell_type = cell_type[, 1]
+      pseudotime = cell_data()[, "pseudotime"], metagene = metagene_vals[, 1],
+      cell_type = cell_data()[, "cell_type_id"]
     )
 
     # Create Spline Cubic Regression spline
@@ -255,8 +255,8 @@ function(input, output, session) {
     )
   })
 
-  observeEvent(input$gene_select, {
-    req(input$gene_select)
+  observeEvent(list(input$gene_select, cell_data()), {
+    req(input$gene_select, cell_data())
     # Load columns
     col_names <- data.table::fread(
       file = "www/data/norm_counts_s3.txt",
@@ -273,21 +273,21 @@ function(input, output, session) {
       stringsAsFactors = FALSE,
       select = idx
     )
-    pseudotime <- data.table::fread(
-      file = "www/data/cell_data_s3.txt",
-      sep = "\t", header = TRUE, data.table = FALSE,
-      stringsAsFactors = TRUE,
-      select = 2
-    )
-    cell_type <- data.table::fread(
-      file = "www/data/cell_data_s3.txt",
-      sep = "\t", header = TRUE, data.table = FALSE,
-      stringsAsFactors = TRUE,
-      select = 6
-    )
+    # pseudotime <- data.table::fread(
+    #   file = "www/data/cell_data_s3.txt",
+    #   sep = "\t", header = TRUE, data.table = FALSE,
+    #   stringsAsFactors = TRUE,
+    #   select = 2
+    # )
+    # cell_type <- data.table::fread(
+    #   file = "www/data/cell_data_s3.txt",
+    #   sep = "\t", header = TRUE, data.table = FALSE,
+    #   stringsAsFactors = TRUE,
+    #   select = 6
+    # )
 
     # Compute Smoother
-    count_ts <- data.frame(pseudotime = pseudotime[, 1], count = count_vals[, 1], cell_type = cell_type[, 1])
+    count_ts <- data.frame(pseudotime = cell_data()[, "pseudotime"], count = count_vals[, 1], cell_type = cell_data()[, "cell_type_id"])
 
     # Create Spline Cubic Regression spline
     model <- mgcv::gam(formula = count ~ s(pseudotime, k = 6), data = count_ts, method = "REML")

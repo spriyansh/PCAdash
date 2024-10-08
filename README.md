@@ -3,7 +3,6 @@
 
 <a href="https://priyansh-srivastava.shinyapps.io/PCAdash/" target="_blank">
   <img src="https://img.shields.io/badge/Launch%20on%20ShinyAppsIO-009E73?style=for-the-badge" alt="Launch on shinyApps IO"></a>    <a href="https://priyansh-srivastava.shinyapps.io/PCAdash/" target="_blank">
-  <img src="https://img.shields.io/badge/Launch%20on%20AWS%20EC2-0072B2?style=for-the-badge" alt="Launch on AWS-EC2">
 </a>
 
 ---
@@ -14,7 +13,7 @@
 </p>
 
 <p align="justify" style="text-indent: 20px;">
-`PCAdash` is deployed on [shinyapps.io](https://www.shinyapps.io/) and AWS-EC2. Additionally, it is integrated with GitHub Actions for CI/CD, enabling automatic deployment on [shinyapps.io](https://www.shinyapps.io/) whenever a new commit is pushed to the `main` branch. The app also utilizes the R-CMD-Check workflow to ensure it is free from errors and warnings. Finally, the app is packaged within an R package named `PCAdash`.
+`PCAdash` is deployed on [shinyapps.io](https://www.shinyapps.io/). Additionally, it is integrated with GitHub Actions for CI/CD, enabling automatic deployment on [shinyapps.io](https://www.shinyapps.io/) whenever a new commit is pushed to the `main` branch. The app also utilizes the R-CMD-Check workflow to ensure it is free from errors and warnings. Finally, the app is packaged within an R package named `PCAdash`.
 </p>
 
 ---
@@ -42,16 +41,5 @@ graph LR;
     Main-Branch-->|Trigger|Deploy-ShinyAppsIO;
     
 ```
-
-
----
-
-<p align="center">
-<a href="https://priyansh-srivastava.shinyapps.io/PCAdash/" target="_blank">
-  <img src="https://img.shields.io/badge/Launch%20on%20ShinyAppsIO-009E73?style=for-the-badge" alt="Launch on shinyApps IO">
-</a> <a href="https://priyansh-srivastava.shinyapps.io/PCAdash/" target="_blank">
-  <img src="https://img.shields.io/badge/Launch%20on%20AWS%20EC2-0072B2?style=for-the-badge" alt="Launch on AWS-EC2">
-</a>
-</p>
 
 ---
